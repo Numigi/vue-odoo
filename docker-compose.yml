@@ -15,7 +15,6 @@ services:
     command: odoo
     environment:
       - LOG_ODOO=/var/log/odoo
-      - SPECIFIC_ODOO_RC=/etc/odoo/odoo_specific.conf
   db:
     image: postgres:9.6
     environment:
