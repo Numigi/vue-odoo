@@ -68,6 +68,4 @@ else{
     });
 }
 
-TranslationDataBase = require("web.translation")._t()
-
 });
