@@ -4,8 +4,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      args:
-        - GIT_TOKEN=${GIT_TOKEN}
     volumes:
       - odoo-web-data:/var/lib/odoo
       - ./.log:/var/log/odoo
@@ -17,6 +15,7 @@ services:
     command: odoo
     environment:
       - LOG_ODOO=/var/log/odoo
+      - SPECIFIC_ODOO_RC=/etc/odoo/odoo_specific.conf
   db:
     image: postgres:9.6
     environment:
