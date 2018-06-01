@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="assets_with_element_ui" name="assets_with_element_ui" inherit_id="vue.assets_with_vuejs">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/vue_element_ui/static/lib/element-ui.js"></script>
+            <link rel="stylesheet" type="text/less" href="/vue_element_ui/static/lib/element-ui.css"/>
+        </xpath>
+    </template>
+
+    <template id="assets_with_element_ui_translations" name="assets_with_element_ui_translations" inherit_id="vue.assets_with_vuejs">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/vue_element_ui/static/src/js/en.js"></script>
+            <script type="text/javascript" src="/vue_element_ui/static/src/js/i18n.js"></script>
+        </xpath>
+    </template>
+
+</odoo>
