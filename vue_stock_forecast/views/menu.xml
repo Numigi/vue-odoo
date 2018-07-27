@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="stock_forecast_action" model="ir.actions.client">
+        <field name="name">Stock Forecast</field>
+        <field name="tag">stock_forecast_report</field>
+        <field name="target">main</field>
+    </record>
+
+    <menuitem
+        id="stock_forecast_menu"
+        name="Stock Forecast"
+        parent="stock.menu_warehouse_report"
+        sequence="20"
+        action="stock_forecast_action"
+        />
+
+</odoo>
