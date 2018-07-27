@@ -5,65 +5,92 @@
 odoo.define("vue_element_ui.i18n", function(require) {
 "use strict";
 
-var ajax = require("web.ajax");
+var rpc = require("web.rpc");
 var Class = require("web.Class");
-var core = require("web.core");
 var enLocale = require("vue_element_ui.en");
-var _t = core._t;
+var utils = require("web.utils");
+var _t = require("web.core")._t;
 
-var ElementUITranslationFetcher = Class.extend({
-    fetch(){
-        var domain = [
-            ["name", "=", "addons/vue_element_ui/static/src/js/i18n.js"],
-            ["lang", "=", odoo.session_info.user_context.lang],
-        ];
-        return ajax.rpc("/web/dataset/call_kw/ir.translation/search_read", {
-            model: "ir.translation",
-            method: "search_read",
-            args: [domain],
-            kwargs: {},
-        }).then(function(result){
-            return result.map(function(translation){
-                return [translation.source, translation.value];
-            });
-        });
-    },
-});
+/**
+ * Get all Element UI translations from the backend.
+ *
+ * @param {String} lang - the language code
+ * @returns {Array} the translations
+ */
+function getElementUITranslations(lang){
+    return rpc.query({
+        model: "ir.translation",
+        method: "get_element_ui_translations",
+        args: [lang],
+    });
+}
 
-var ElementUILocaleBuilder = Class.extend({
-    build(translations){
-        var userLocale = {};
+/**
+ * Build the locale for Element UI components for a given array of translations.
+ *
+ * The result is an object with the same structure as found in the file ./en.js.
+ *
+ * Given the following array of translations:
+ *
+ * [['el.colorpicker.confirm', 'OK'],
+ *  ['el.colorpicker.clear', 'Effacer'],
+ *  ['el.datepicker.now', 'Maintenant'],
+ *  ...]
+ *
+ * The result would be:
+ *
+ * {
+ *   el: {
+ *     colorpicker: {
+ *       confirm: 'OK',
+ *       clear: 'Effacer',
+ *     },
+ *     datepicker: {
+ *       now: 'Maintenant',
+ *       ...
+ *     },
+ *     ...
+ *   }
+ * }
+ *
+ * @param {Array} translations - the component translations
+ * @returns {Object} the Element UI locale
+ */
+function buildElementUILocale(translations){
+    var userLocale = {};
 
-        translations.forEach(function(translation){
-            var keys = translation[0].split('.');
-            var currentDict = userLocale;
+    translations.forEach(function(translation){
+        var keys = translation[0].split(".");
+        var currentDict = userLocale;
 
-            for(var i = 0; i < keys.length - 1; i++){
-                var key = keys[i];
-                if(!(key in currentDict)){
-                    currentDict[key] = {};
-                }
-                currentDict = currentDict[key];
+        for(var i = 0; i < keys.length - 1; i++){
+            var key = keys[i];
+            if(!(key in currentDict)){
+                currentDict[key] = {};
             }
+            currentDict = currentDict[key];
+        }
 
-            var value = translation[1];
-            var lastKey = keys[keys.length - 1];
-            currentDict[lastKey] = value;
-        });
+        var value = translation[1];
+        var lastKey = keys[keys.length - 1];
+        currentDict[lastKey] = value;
+    });
 
-        // Deep merge of the user locale into the en_US locale.
-        // Any term that does not exist in the user lang will use the english translation.
-        return $.extend(true, {}, enLocale, userLocale);
-    },
-});
+    // Deep merge of the user locale into the en_US locale.
+    // Any term that does not exist in the user lang will use the english translation.
+    // Otherwise, we get chinese terms by default.
+    return $.extend(true, {}, enLocale, userLocale);
+}
 
-var lang = odoo.session_info.user_context.lang;
-if(lang === "en_US"){
+var isFrontend = odoo.session_info.is_frontend;
+var lang = isFrontend ? utils.get_cookie("frontend_lang") : odoo.session_info.user_context.lang;
+
+if(!lang || lang === "en_US"){
     ELEMENT.locale(enLocale);
 }
 else{
-    new ElementUITranslationFetcher().fetch().then(function(translations){
-        var userLocale = new ElementUILocaleBuilder().build(translations);
+    getElementUITranslations(lang).then(function(translations){
+        var userLocale = buildElementUILocale(translations);
         ELEMENT.locale(userLocale);
     });
 }
