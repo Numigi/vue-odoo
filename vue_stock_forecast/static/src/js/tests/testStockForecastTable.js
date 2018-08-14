@@ -9,12 +9,12 @@ var dateGroups = [
     {key: "2018-03", label: "March 2018"},
 ];
 
-var productGroups = [
-    {key: 1, label: "Product A"},
-    {key: 2, label: "Product B"},
+var products = [
+    {id: 1, label: "Product A"},
+    {id: 2, label: "Product B"},
 ];
 
-var stockMoveData = (
+var stockData = (
     new Map()
     .set(1, {
         currentStock: 10,
@@ -32,8 +32,8 @@ test("Render Forecast Table", t => {
     var Constructor = Vue.extend(StockForecastTable);
     var vm = new Constructor({
         propsData: {
-            stockMoveData,
-            productGroups,
+            stockData,
+            products,
             dateGroups,
         }
     }).$mount();

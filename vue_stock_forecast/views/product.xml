@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="product_template_only_form_view" model="ir.ui.view">
+        <field name="name">Product Template With Stock Forecast</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <notebook position="inside">
+                <page name="stock_forecast" string="Stock Forecast">
+                    <widget name="stock_forecast"/>
+                </page>
+            </notebook>
+        </field>
+    </record>
+
+</odoo>

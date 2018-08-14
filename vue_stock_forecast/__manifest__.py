@@ -14,6 +14,7 @@
     'depends': ['vue', 'vue_element_ui', 'sale_stock'],
     'data': [
         'views/assets.xml',
+        'views/menu.xml',
     ],
     'installable': True,
 }
