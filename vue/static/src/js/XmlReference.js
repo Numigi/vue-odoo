@@ -28,7 +28,7 @@ var XmlReference = Class.extend({
                 new QueryBuilder("ir.model.data", ["res_id", "model"])
                 .filter([["module", "=", this._module], ["name", "=", this._name]])
                 .searchRead()
-            )
+            );
         }
         return (await this._query)[0].res_id;
     },

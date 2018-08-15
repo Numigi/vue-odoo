@@ -1,12 +1,12 @@
 
-import test from "ava"
-import ElementUI from "element-ui"
-import Vue from "vue"
+import test from "ava";
+import ElementUI from "element-ui";
+import Vue from "vue";
 
-import StockForecastTable from "../StockForecastTable.vue"
-import pretty from "pretty"
+import StockForecastTable from "../StockForecastTable.vue";
+import pretty from "pretty";
 
-Vue.use(ElementUI)
+Vue.use(ElementUI);
 
 var propsData = {
     dateFrom: moment("2018-01-01").toDate(),

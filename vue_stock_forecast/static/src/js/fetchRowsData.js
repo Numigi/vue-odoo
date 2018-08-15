@@ -80,7 +80,7 @@ async function groupRowsByCategory(productRows, categories){
         };
         categoryRows.push(newRow);
         return newRow;
-    }
+    };
 
     var allProductIds = productRows.map((r) => r.product.id);
 
@@ -175,7 +175,7 @@ async function getStockQuants(products, locations){
         .filter([
             ["location_id.usage", "=", "internal"],
         ])
-    )
+    );
     if(products.length){
         query.filter([["product_id", "in", products.map((p) => p.id)]]);
     }

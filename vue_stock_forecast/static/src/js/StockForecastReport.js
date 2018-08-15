@@ -65,7 +65,7 @@ var StockForecastReport = Widget.extend({
     },
     _nameSearchQuery(model, query, domain, limit){
         return this._rpc({
-            model: model,
+            model,
             method: "name_search",
             kwargs: {
                 name: query,
@@ -105,9 +105,8 @@ var StockForecastReport = Widget.extend({
             domain.push(["product_id.uom_id", "=", row.uom[0]]);
         }
 
-        if(this.$vm.locations.length){
-            domain.push(["location_id", "child_of", this.$vm.locations.map(l => l.id)]);
-        }
+        domain = domain.concat(this.getStockQuantLocationDomain());
+
         this.do_action({
             res_model: "stock.quant",
             name: _t("Current Stocks"),
@@ -115,6 +114,19 @@ var StockForecastReport = Widget.extend({
             type: "ir.actions.act_window",
             domain,
         });
+    },
+    /**
+     * Get the domain related to locations used for filtering stock quants.
+     *
+     * @returns {Array} the domain filter.
+     */
+    getStockQuantLocationDomain(){
+        var domain = [];
+        var locationIds = this.$vm.locations.map((l) => l.id);
+        if(locationIds.length){
+            domain.push(["location_id", "child_of", locationIds]);
+        }
+        return domain;
     },
     /**
      * Handle the click on a stock move amount.
@@ -188,7 +200,7 @@ var StockForecastReport = Widget.extend({
         return domain;
     },
     do_show(){
-        this.$el.removeClass('o_hidden');
+        this.$el.removeClass("o_hidden");
         this.$el[0].appendChild(this.$vm.$el);
     },
     destroy(){
