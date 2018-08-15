@@ -28,11 +28,11 @@ var StockForecastReport = Widget.extend({
             }
         }).$mount(this.$el[0]);
 
-        this.$vm.$on("current-stock-clicked", (productId) => this.onCurrentStockClicked(productId));
+        this.$vm.$on("current-stock-clicked", (row) => this.onCurrentStockClicked(row));
 
         this.$vm.$on(
             "move-amount-clicked",
-            (productId, dateFrom, dateTo) => this.onMoveAmountClicked(productId, dateFrom, dateTo)
+            (row, dateFrom, dateTo) => this.onMoveAmountClicked(row, dateFrom, dateTo)
         );
 
         this.onFilterChange();
@@ -60,32 +60,25 @@ var StockForecastReport = Widget.extend({
     },
     async onFilterChange(products){
         if(!this.$vm.products.length && !this.$vm.productCategories.length){
-            this.$vm.products = [];
-            this.$vm.stockData = new Map();
+            this.$vm.rows = [];
             return;
         }
 
-        if(this.$vm.rowGroupBy === "product"){
-            var products = await fetchProducts(this.$vm.products, this.$vm.productCategories);
-            var categories = this.$vm.productCategories;
-            this.$vm.rowGroups = products.sort((p) => p.display_name);
-        }
-        else {
-            var products = [];
-            var categories = await fetchProductCategories(this.$vm.productCategories);
-            this.$vm.rowGroups = categories.sort((c) => c.display_name);
-        }
-
-        this.$vm.stockData = await fetchStockData(products, categories, this.$vm.locations, this.$vm.rowGroupBy);
+        var rows = await fetchStockData(
+            this.$vm.products, this.$vm.productCategories, this.$vm.locations, this.$vm.rowGroupBy);
+        this.$vm.rows = rows.sort((r1, r2) => r1.label > r2.label);
     },
-    onCurrentStockClicked(productId){
+    onCurrentStockClicked(row){
         var domain = [["location_id.usage", "=", "internal"]];
 
-        if(this.$vm.rowGroupBy === "product"){
-            domain.push(["product_id", "=", productId]);
+        if(row.product){
+            domain.push(["product_id", "=", row.product.id]);
         }
-        else {
-            domain.push(["product_id.categ_id", "child_of", productId]);
+        if(row.category) {
+            domain.push(["product_id.categ_id", "child_of", row.category.id]);
+        }
+        if(row.uom){
+            domain.push(["product_id.uom_id", "=", row.uom[0]]);
         }
 
         if(this.$vm.locations.length){
@@ -99,20 +92,23 @@ var StockForecastReport = Widget.extend({
             domain: domain,
         });
     },
-    onMoveAmountClicked(productId, dateFrom, dateTo){
-        var dateTo = moment(dateTo).add(1, this.$vm.dateGroupBy || "month").format("YYYY-MM-DD");
+    onMoveAmountClicked(row, dateFrom, dateTo){
+        var dayAfterDateTo = moment(dateTo).add(1, "day").format("YYYY-MM-DD");
         var domain = [
             ["state", "not in", ["done", "cancel"]],
             "|",
             ["date_expected", ">=", dateFrom],
-            ["date_expected", "<", dateTo],
+            ["date_expected", "<", dayAfterDateTo],
         ];
 
-        if(this.$vm.rowGroupBy === "product"){
-            domain.push(["product_id", "=", productId]);
+        if(row.product){
+            domain.push(["product_id", "=", row.product.id]);
         }
-        else {
-            domain.push(["product_id.categ_id", "child_of", productId]);
+        if(row.category) {
+            domain.push(["product_id.categ_id", "child_of", row.category.id]);
+        }
+        if(row.uom){
+            domain.push(["product_id.uom_id", "=", row.uom[0]]);
         }
 
         if(this.$vm.locations.length){

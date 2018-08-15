@@ -1,25 +1,43 @@
 <template>
   <div class="stock-forecast-table">
-    <el-table :data="tableData" height="800" border>
-      <el-table-column prop="label" label="Product" width="300" fixed="left"></el-table-column>
-      <el-table-column label="Stock" width="150" align="center">
+    <el-table :data="rows" height="800" border>
+      <el-table-column :label="rowGroupLabel" width="300" fixed="left">
         <template slot-scope="scope">
-          <div class="stock-forecast-table__link" @click="currentStockClicked(scope.row.id)" v-if="scope.row.currentStock">
-            {{ scope.row.currentStock }}
+          <div>
+            {{ scope.row.label }}
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column :label="translate('Stock')" width="150" align="center">
+        <template slot-scope="scope">
+          <div class="stock-forecast-table__link" @click="currentStockClicked(scope.row)" v-if="scope.row.currentStock">
+            {{ displayCurrentStock(scope.row) }}
           </div>
           <div v-else>0</div>
         </template>
       </el-table-column>
-      <el-table-column prop="reserved" label="Reserved" width="150" align="center"></el-table-column>
-      <el-table-column prop="available" label="Available" width="150" align="center"></el-table-column>
+      <el-table-column :label="translate('Reserved')" width="150" align="center">
+        <template slot-scope="scope">
+          <div>
+            {{ displayReservedStock(scope.row) }}
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column :label="translate('Available')" width="150" align="center">
+        <template slot-scope="scope">
+          <div>
+            {{ displayAvailableStock(scope.row) }}
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column v-for="dateGroup in dateGroups" :key="dateGroup.key" :label="dateGroup.label" width="150" align="center">
         <template slot-scope="scope">
           <div class="stock-forecast-table__link"
-            @click="moveAmountClicked(scope.row.id, dateGroup.key)"
-            v-if="productHasMovesAtDate(scope.row.id, dateGroup.key)">
-            {{ getStockValue(scope.row.id, dateGroup.key) }}
+            @click="moveAmountClicked(scope.row, dateGroup.key)"
+            v-if="productHasMovesAtDate(scope.row, dateGroup.key)">
+            {{ getStockValue(scope.row, dateGroup.key) }}
           </div>
-          <div v-else>{{ getStockValue(scope.row.id, dateGroup.key) }}</div>
+          <div v-else>{{ getStockValue(scope.row, dateGroup.key) }}</div>
         </template>
       </el-table-column>
     </el-table>
@@ -57,76 +75,58 @@ export default {
         },
         dateGroupBy: {
             type: String,
-            default: "month",
+            required: true,
         },
-        products: {
+        rowGroupBy: {
+            type: String,
+            required: true,
+        },
+        rows: {
             type: Array,
             required: true,
         },
-        stockData: {
-            type: Map,
+        translate: {
+            type: Function,
             required: true,
         },
     },
     computed: {
-        effectiveDateGroupBy(){
-            return this.dateGroupBy || "month";
-        },
         dateGroups(){
-            return getDateRange(this.dateFrom, this.dateTo, this.effectiveDateGroupBy);
+            return getDateRange(this.dateFrom, this.dateTo, this.dateGroupBy || "month");
         },
-        tableData(){
-            return this.products.map(product => {
-                var productData = {
-                    id: product.id,
-                    label: product.display_name,
-                    currentStock: this.getCurrentStock(product),
-                    reserved: this.getReservedStock(product),
-                    available: this.getAvailableStock(product),
-                }
-                return productData;
-            });
+        rowGroupLabel(){
+            var label = this.rowGroupBy === "product" ? "Product" : "Product Category";
+            return this.translate(label);
         },
     },
     methods: {
-        productHasMovesAtDate(productId, dateTo){
-            var stockData = this.stockData.get(productId);
-            if(!stockData){
-                return false;
-            }
-
-            var dateFrom = moment(dateTo).subtract(1, this.effectiveDateGroupBy).format("YYYY-MM-DD");
+        productHasMovesAtDate(row, dateTo){
+            var dateFrom = moment(dateTo).subtract(1, this.dateGroupBy || "month").format("YYYY-MM-DD");
             var movesAtDate = (move) => dateFrom < move.date && move.date <= dateTo;
 
             return (
-              stockData.incoming.filter(movesAtDate).length > 0 ||
-              stockData.outgoing.filter(movesAtDate).length > 0
+              row.incoming.filter(movesAtDate).length > 0 ||
+              row.outgoing.filter(movesAtDate).length > 0
             )
         },
-        getStockValue(productId, dateTo){
-            var stockData = this.stockData.get(productId);
-            if(!stockData){
-                return 0;
-            }
-
-            var stockMoveSum = (result, m) => result + m.qty;
+        getStockValue(row, dateTo){
+            var stockMoveSum = (result, move) => result + move.qty;
 
             var movesBeforeDate = (move) => move.date <= dateTo;
-            var incomingQty = stockData.incoming.filter(movesBeforeDate).reduce(stockMoveSum, 0);
-            var outgoingQty = stockData.outgoing.filter(movesBeforeDate).reduce(stockMoveSum, 0);
-            var stockAtDate = stockData.currentStock + incomingQty - outgoingQty;
+            var incomingQty = row.incoming.filter(movesBeforeDate).reduce(stockMoveSum, 0);
+            var outgoingQty = row.outgoing.filter(movesBeforeDate).reduce(stockMoveSum, 0);
+            var stockAtDate = row.currentStock + incomingQty - outgoingQty;
 
-            var dateFrom = moment(dateTo).subtract(1, this.effectiveDateGroupBy).format("YYYY-MM-DD");
-            var dateTo = dateTo;
+            var dateFrom = moment(dateTo).subtract(1, this.dateGroupBy).format("YYYY-MM-DD");
+
             var movesAtDate = (move) => dateFrom < move.date && move.date <= dateTo;
-
-            var incomingQtyAtDate = stockData.incoming.filter(movesAtDate).reduce(stockMoveSum, 0);
-            var outgoingQtyAtDate = stockData.outgoing.filter(movesAtDate).reduce(stockMoveSum, 0);
+            var incomingQtyAtDate = row.incoming.filter(movesAtDate).reduce(stockMoveSum, 0);
+            var outgoingQtyAtDate = row.outgoing.filter(movesAtDate).reduce(stockMoveSum, 0);
 
             if(incomingQtyAtDate && outgoingQtyAtDate){
                 return String(stockAtDate) + " (+" + String(incomingQtyAtDate) + " / " + "-" + String(outgoingQtyAtDate) + ")";
             }
-            else if(incomingQty){
+            else if(incomingQtyAtDate){
                 return String(stockAtDate) + " (+" + String(incomingQtyAtDate) + ")";
             }
             else if(outgoingQtyAtDate){
@@ -136,30 +136,21 @@ export default {
                 return String(stockAtDate);
             }
         },
-        getCurrentStock(product){
-            var stockData = this.stockData.get(product.id);
-            return stockData ? stockData.currentStock : 0;
+        displayCurrentStock(row){
+            return row.currentStock;
         },
-        getReservedStock(product){
-            var stockData = this.stockData.get(product.id);
-            return stockData ? stockData.reserved : 0;
+        displayReservedStock(row){
+            return row.reserved;
         },
-        getAvailableStock(product){
-            var stockData = this.stockData.get(product.id);
-            return stockData ? stockData.currentStock - stockData.reserved : 0;
+        displayAvailableStock(row){
+            return row.currentStock - row.reserved;
         },
-        currentStockClicked(productId){
-            this.$emit('current-stock-clicked', productId);
+        currentStockClicked(row){
+            this.$emit('current-stock-clicked', row);
         },
-        moveAmountClicked(productId, dateToString){
-            var dateFrom = (
-              moment(dateToString)
-              .subtract(1, this.effectiveDateGroupBy)
-              .add(1, this.effectiveDateGroupBy)
-              .format("YYYY-MM-DD")
-            );
-            var dateTo = dateToString;
-            this.$emit('move-amount-clicked', productId, dateFrom, dateTo);
+        moveAmountClicked(row, dateTo){
+            var dateFrom = moment(dateTo).subtract(1, this.dateGroupBy).add(1, "day").format("YYYY-MM-DD");
+            this.$emit('move-amount-clicked', row, dateFrom, dateTo);
         },
     },
 };

@@ -48,10 +48,11 @@
         :dateFrom="effectiveDateFrom"
         :dateTo="effectiveDateTo"
         :dateGroupBy="dateGroupBy"
-        :products="rowGroups"
-        :stockData="stockData"
-        @current-stock-clicked="(productId) => $emit('current-stock-clicked', productId)"
-        @move-amount-clicked="(productId, dateFrom, dateTo) => $emit('move-amount-clicked', productId, dateFrom, dateTo)"
+        :rowGroupBy="rowGroupBy"
+        :rows="rows"
+        :translate="translate"
+        @current-stock-clicked="(row) => $emit('current-stock-clicked', row)"
+        @move-amount-clicked="(row, dateFrom, dateTo) => $emit('move-amount-clicked', row, dateFrom, dateTo)"
         />
 </div>
 
@@ -89,14 +90,13 @@ export default {
     data(){
         return {
             dateFrom: "",
-            dateGroupBy: "",
             dateTo: "",
+            dateGroupBy: "month",
             rowGroupBy: "product",
             locations: [],
             productCategories: [],
             products: [],
-            stockData: new Map(),
-            rowGroups: [],
+            rows: [],
         };
     },
     computed: {
@@ -104,7 +104,7 @@ export default {
             return this.dateFrom || new Date();
         },
         effectiveDateTo(){
-            return this.dateTo || moment(new Date()).add(6, this.dateGroupBy || "month").toDate();
+            return this.dateTo || moment(new Date()).add(6, this.dateGroupBy).toDate();
         },
         dateGroupByOptions(){
             return [

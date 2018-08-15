@@ -6,6 +6,7 @@
             <link rel="stylesheet" type="text/css" href="/vue_stock_forecast/static/src/css/stock_forecast.css"/>
             <script type="text/javascript" src="/vue_stock_forecast/static/dist/vueStockForecast.js"></script>
             <script type="text/javascript" src="/vue_stock_forecast/static/src/js/QueryBuilder.js"></script>
+            <script type="text/javascript" src="/vue_stock_forecast/static/src/js/XmlReference.js"></script>
             <script type="text/javascript" src="/vue_stock_forecast/static/src/js/fetchStockData.js"></script>
             <script type="text/javascript" src="/vue_stock_forecast/static/src/js/fetchProducts.js"></script>
             <script type="text/javascript" src="/vue_stock_forecast/static/src/js/fetchProductCategories.js"></script>

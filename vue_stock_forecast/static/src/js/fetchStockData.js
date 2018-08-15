@@ -1,17 +1,67 @@
 odoo.define("vue_stock_forecast.fetchStockData", function(require){
 
 var QueryBuilder = require("vue_stock_forecast.QueryBuilder");
+var XmlReference = require("vue_stock_forecast.XmlReference");
+
+var uomUnit = new XmlReference("product", "product_uom_unit");
 
 async function fetchStockData(products, categories, locations, groupBy){
-    var incomingDeferred = getIncomingMoveData(products, categories, locations);
-    var outgoingDeferred = getOutgoingMoveData(products, categories, locations);
-    var stockDeferred = getCurrentStockData(products, categories, locations);
+    var allProducts = await getAllProducts(products, categories);
+    var allProductsData = await getProductData(allProducts, locations);
 
-    var result = new Map();
+    var productRows = allProducts.map((product) => {
+        var rowData = {
+            label: product.display_name,
+            product: product,
+            uom: product.uom_id,
+            currentStock: 0,
+            reserved: 0,
+            incoming: [],
+            outgoing: [],
+        }
+
+        if(allProductsData.has(product.id)){
+            var stockData = allProductsData.get(product.id);
+            rowData.currentStock = stockData.currentStock;
+            rowData.reserved = stockData.reserved;
+            rowData.incoming = stockData.incoming;
+            rowData.outgoing = stockData.outgoing;
+        }
+
+        return rowData;
+    });
+
+    if(groupBy === "category"){
+        var allCategories = await getAllCategories(categories);
+        return await groupRowsByCategory(productRows, allCategories);
+    }
+
+    return productRows;
+}
+
+function getAllProducts(products, categories){
+    return (
+        new QueryBuilder("product.product", ["id", "uom_id", "display_name"])
+        .filter([
+            "|",
+            ["categ_id", "child_of", categories.map((c) => c.id)],
+            ["id", "in", products.map((p) => p.id)],
+        ])
+        .searchRead()
+    );
+}
+
+async function getProductData(products, locations){
+    var incomingDeferred = getIncomingMoveData(products, locations);
+    var outgoingDeferred = getOutgoingMoveData(products, locations);
+    var stockDeferred = getCurrentStockData(products, locations);
+
+    var productData = new Map();
 
     var setDefault = (productId) => {
-        if(!result.has(productId)){
-            result.set(productId, {
+        if(!productData.has(productId)){
+            productData.set(productId, {
+                uom: null,
                 currentStock: 0,
                 reserved: 0,
                 incoming: [],
@@ -23,77 +73,90 @@ async function fetchStockData(products, categories, locations, groupBy){
     var incomingMoves = await incomingDeferred;
     incomingMoves.forEach(move => {
         setDefault(move.product_id[0]);
-        var incoming = result.get(move.product_id[0]).incoming;
-        incoming.push({qty: move.product_uom_qty, date: move.date_expected.slice(0, 10)});
+        var incoming = productData.get(move.product_id[0]).incoming;
+        incoming.push({qty: move.product_qty, date: move.date_expected.slice(0, 10)});
     });
 
     var outgoingMoves = await outgoingDeferred;
     outgoingMoves.forEach(move => {
         setDefault(move.product_id[0]);
-        var outgoing = result.get(move.product_id[0]).outgoing;
-        outgoing.push({qty: move.product_uom_qty, date: move.date_expected.slice(0, 10)});
+        var outgoing = productData.get(move.product_id[0]).outgoing;
+        outgoing.push({qty: move.product_qty, date: move.date_expected.slice(0, 10)});
     });
 
     var quants = await stockDeferred;
     quants.forEach(quant => {
         setDefault(quant.product_id[0]);
-        result.get(quant.product_id[0]).currentStock += quant.quantity;
-        result.get(quant.product_id[0]).reservedQuantity += quant.reserved_quantity;
+        productData.get(quant.product_id[0]).currentStock += quant.quantity;
+        productData.get(quant.product_id[0]).reservedQuantity += quant.reserved_quantity;
     });
 
-    if(groupBy === "category"){
-        return await mergeStockDataByCategory(result, categories);
-    }
-
-    return result;
+    return productData;
 }
 
-async function mergeStockDataByCategory(stockDataByProduct, categories){
-    var result = new Map();
+function getAllCategories(categories){
+    return (
+        new QueryBuilder("product.category", ["id", "display_name"])
+        .filter([["id", "child_of", categories.map((c) => c.id)]])
+        .searchRead()
+    );
+}
 
-    var filteredProductIds = new Array(...stockDataByProduct.keys());
+async function groupRowsByCategory(productRows, categories){
+    var categoryRows = [];
+    var uomUnitId = await uomUnit.getId();
 
-    var setDefault = (categoryId) => {
-        if(!result.has(categoryId)){
-            result.set(categoryId, {
-                currentStock: 0,
-                reserved: 0,
-                incoming: [],
-                outgoing: [],
-            });
+    var getMatchingCategoryRow = (category, uom) => {
+        var matchingRow = categoryRows.find(r => r.uom[0] === uom[0] && r.category === category);
+        if(matchingRow){
+            return matchingRow;
         }
+        var newRow = {
+            label: uom[0] === uomUnitId ? category.display_name : category.display_name + " (" + uom[1] + ")",
+            category: category,
+            uom: uom,
+            currentStock: 0,
+            reserved: 0,
+            incoming: [],
+            outgoing: [],
+        };
+        categoryRows.push(newRow);
+        return newRow;
     }
 
-    var queries = categories.map(async (category) => {
-        setDefault(category.id);
-        var categoryData = result.get(category.id);
+    var allProductIds = productRows.map(r => r.product.id);
 
+    var queries = categories.map(async (category) => {
         var query = (
-            new QueryBuilder("product.product", ["id"])
+            new QueryBuilder("product.product", ["id", "uom_id"])
             .filter([
                 ["categ_id", "child_of", category.id],
-                ["id", "in", filteredProductIds],
+                ["id", "in", allProductIds],
             ])
         );
 
         var products = await query.searchRead();
-        var productsWithData = products.filter((product) => stockDataByProduct.has(product.id));
-        productsWithData.forEach((product) => {
-            var productData = stockDataByProduct.get(product.id);
-            categoryData.currentStock += productData.currentStock;
-            categoryData.reserved += productData.reserved;
-            categoryData.incoming = categoryData.incoming.concat(productData.incoming);
-            categoryData.outgoing = categoryData.outgoing.concat(productData.outgoing);
+
+        products.forEach((product) => {
+            var productRow = productRows.find(r => r.product.id === product.id);
+
+            if(productRow){
+                var categoryRow = getMatchingCategoryRow(category, product.uom_id);
+                categoryRow.currentStock += productRow.currentStock;
+                categoryRow.reserved += productRow.reserved;
+                categoryRow.incoming = categoryRow.incoming.concat(productRow.incoming);
+                categoryRow.outgoing = categoryRow.outgoing.concat(productRow.outgoing);
+            }
         });
     });
 
     await Promise.all(queries);
-    return result;
+    return categoryRows;
 }
 
 async function getIncomingMoveData(products, categories, locations){
     var query = (
-        new QueryBuilder("stock.move", ["product_id", "product_uom_qty", "date_expected"])
+        new QueryBuilder("stock.move", ["product_id", "product_qty", "date_expected"])
         .filter([
             ["state", "not in", ["done", "cancel"]],
             ["location_id.usage", "!=", "internal"],
@@ -113,7 +176,7 @@ async function getIncomingMoveData(products, categories, locations){
 
 async function getOutgoingMoveData(products, categories, locations){
     var query = (
-        new QueryBuilder("stock.move", ["product_id", "product_uom_qty", "date_expected"])
+        new QueryBuilder("stock.move", ["product_id", "product_qty", "date_expected"])
         .filter([
             ["state", "not in", ["done", "cancel"]],
             ["location_id.usage", "=", "internal"],
