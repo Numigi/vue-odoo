@@ -5,9 +5,7 @@ var core = require("web.core");
 var Widget = require("web.Widget");
 var data = require("web.data");
 
-var fetchStockData = require("vue_stock_forecast.fetchStockData");
-var fetchProducts = require("vue_stock_forecast.fetchProducts");
-var fetchProductCategories = require("vue_stock_forecast.fetchProductCategories");
+var fetchRowsData = require("vue_stock_forecast.fetchRowsData");
 var ReportComponent = Vue.extend(vueStockForecast.StockForecastReport);
 
 var _t = core._t;
@@ -38,12 +36,30 @@ var StockForecastReport = Widget.extend({
         this.onFilterChange();
         return this._super.apply(this, arguments);
     },
+    /**
+     * Search products by name.
+     *
+     * @param {String} query - the expression to search.
+     * @returns {Array[Object]} - the product records found.
+     */
     searchProducts(query){
         return this._nameSearchQuery("product.product", query, []);
     },
+    /**
+     * Search product categories by name.
+     *
+     * @param {String} query - the expression to search.
+     * @returns {Array[Object]} - the product category records found.
+     */
     searchProductCategories(query){
         return this._nameSearchQuery("product.category", query, []);
     },
+    /**
+     * Search stock locations by name.
+     *
+     * @param {String} query - the expression to search.
+     * @returns {Array[Object]} - the stock location records found.
+     */
     searchStockLocations(query){
         return this._nameSearchQuery("stock.location", query, [["usage", "=", "internal"]]);
     },
@@ -64,10 +80,18 @@ var StockForecastReport = Widget.extend({
             return;
         }
 
-        var rows = await fetchStockData(
+        var rows = await fetchRowsData(
             this.$vm.products, this.$vm.productCategories, this.$vm.locations, this.$vm.rowGroupBy);
         this.$vm.rows = rows.sort((r1, r2) => r1.label > r2.label);
     },
+    /**
+     * Handle the click on a stock quant amount (the column `Stock`).
+     *
+     * An action is triggered to redirect the user to the list of stock quants that
+     * compose the amount clicked.
+     *
+     * @param {Object} row - the data of the row on which the user clicked.
+     */
     onCurrentStockClicked(row){
         var domain = [["location_id.usage", "=", "internal"]];
 
@@ -92,6 +116,18 @@ var StockForecastReport = Widget.extend({
             domain: domain,
         });
     },
+    /**
+     * Handle the click on a stock move amount.
+     *
+     * An action is triggered to redirect the user to the list of stock moves
+     * that compose the amount clicked.
+     *
+     * The given dateFrom and dateTo represent the date interval of the amount clicked.
+     *
+     * @param {Object} row - the data of the row on which the user clicked.
+     * @param {String} dateFrom - the min date
+     * @param {String} dateTo - the max date
+     */
     onMoveAmountClicked(row, dateFrom, dateTo){
         var dayAfterDateTo = moment(dateTo).add(1, "day").format("YYYY-MM-DD");
         var domain = [

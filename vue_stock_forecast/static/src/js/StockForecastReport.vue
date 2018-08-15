@@ -4,14 +4,14 @@
     <el-card class="stock-forecast-report__filters">
         <el-form :model="$data" label-width="150px" label-position="left" inline>
             <el-form-item :label="translate('Location')">
-                <many2many :searchItems="searchStockLocations" @change="_onLocationChange"></many2many>
+                <many2many :search="searchStockLocations" @change="onLocationChange"></many2many>
             </el-form-item>
         </el-form>
 
         <!-- Product / Category Options -->
         <el-form :model="$data" label-width="150px" label-position="left" inline>
             <el-form-item :label="translate('Rows')">
-                <el-select v-model="rowGroupBy" @change="_onRowGroupByChange">
+                <el-select v-model="rowGroupBy" @change="onRowGroupByChange">
                     <el-option
                         :label="item.label" :value="item.value"
                         v-for="item in rowGroupByOptions" :key="item.value">
@@ -19,10 +19,10 @@
                 </el-select>
             </el-form-item>
             <el-form-item :label="translate('Products')" v-show="rowGroupBy === 'product'">
-                <many2many :searchItems="searchProducts" @change="_onProductChange"></many2many>
+                <many2many :search="searchProducts" @change="onProductChange"></many2many>
             </el-form-item>
             <el-form-item :label="translate('Product Categories')">
-                <many2many :searchItems="searchProductCategories" @change="_onProductCategoryChange"></many2many>
+                <many2many :search="searchProductCategories" @change="onProductCategoryChange"></many2many>
             </el-form-item>
         </el-form>
 
@@ -79,6 +79,7 @@ export default {
         // Function to call when a filter input (many2many field) was changed.
         onFilterChange: {
             type: Function,
+            required: true,
         },
 
         // Injected function for translating the widget labels.
@@ -121,25 +122,20 @@ export default {
         },
     },
     methods: {
-        _onFilterChange(){
-            if(this.onFilterChange){
-                this.onFilterChange();
-            }
+        onRowGroupByChange(value){
+            this.onFilterChange();
         },
-        _onRowGroupByChange(value){
-            this._onFilterChange();
-        },
-        _onProductChange(value){
+        onProductChange(value){
             this.products = value;
-            this._onFilterChange();
+            this.onFilterChange();
         },
-        _onProductCategoryChange(value){
+        onProductCategoryChange(value){
             this.productCategories = value;
-            this._onFilterChange();
+            this.onFilterChange();
         },
-        _onLocationChange(value){
+        onLocationChange(value){
             this.locations = value;
-            this._onFilterChange();
+            this.onFilterChange();
         },
     }
 };

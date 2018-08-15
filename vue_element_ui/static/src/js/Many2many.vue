@@ -18,11 +18,15 @@
 </template>
 <script>
 
-import { removeResizeListener } from 'element-ui/src/utils/resize-event';
-
 export default {
     props: {
-        searchItems: {
+        /**
+         * A function for searching records when the user enters an expression.
+         * 
+         * The function takes in parameter a string and returns an array of records.
+         * Each returned record is an odoo name_get tuple [id, display_name].
+         */
+        search: {
             type: Function,
             required: true,
         },
@@ -43,7 +47,7 @@ export default {
     },
     methods: {
         _searchItems(query){
-            this.searchItems(query).then(result => {
+            this.search(query).then(result => {
                 var itemsFound = result.map(r => {
                     return {id: r[0], name: r[1]};
                 });

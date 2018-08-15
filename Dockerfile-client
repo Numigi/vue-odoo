@@ -6,8 +6,8 @@ WORKDIR /home/client
 
 USER client
 
-COPY package.json .
+COPY .docker_files/package.json .docker_files/package-lock.json ./
 RUN npm install
 
 COPY .docker_files/ava ava
-COPY --chown=client:client vue_stock_forecast vue_stock_forecast
+COPY vue_stock_forecast vue_stock_forecast

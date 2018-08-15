@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <template id="assets_backend_with_stock_forecast" name="assets_backend_with_stock_forecast" inherit_id="vue.assets_with_vuejs">
+    <template id="assets_backend_with_stock_forecast" name="assets_backend_with_stock_forecast" inherit_id="vue.assets_backend_with_vuejs">
         <xpath expr="." position="inside">
             <link rel="stylesheet" type="text/css" href="/vue_stock_forecast/static/src/css/stock_forecast.css"/>
             <script type="text/javascript" src="/vue_stock_forecast/static/dist/vueStockForecast.js"></script>
-            <script type="text/javascript" src="/vue_stock_forecast/static/src/js/QueryBuilder.js"></script>
-            <script type="text/javascript" src="/vue_stock_forecast/static/src/js/XmlReference.js"></script>
-            <script type="text/javascript" src="/vue_stock_forecast/static/src/js/fetchStockData.js"></script>
-            <script type="text/javascript" src="/vue_stock_forecast/static/src/js/fetchProducts.js"></script>
-            <script type="text/javascript" src="/vue_stock_forecast/static/src/js/fetchProductCategories.js"></script>
+            <script type="text/javascript" src="/vue_stock_forecast/static/src/js/fetchRowsData.js"></script>
             <script type="text/javascript" src="/vue_stock_forecast/static/src/js/StockForecastReport.js"></script>
         </xpath>
     </template>

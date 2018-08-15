@@ -73,7 +73,7 @@ msgstr "Articles"
 #. openerp-web
 #: code:addons/vue_stock_forecast/static/dist/vueStockForecast.js:0
 msgid "Rows"
-msgstr "Rangées"
+msgstr "Lignes"
 
 #. module: vue_stock_forecast
 #. openerp-web

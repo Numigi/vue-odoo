@@ -4,7 +4,7 @@ module.exports = {
   entry: ["./src/js/main.js"],
   mode: "production",
   devtool: false,
-  output: {filename: "vueStockForecast.js"},
+  output: {filename: "vueElementUI.js"},
   module: {
     rules: [
       {test: /\.js$/, loader: "babel-loader", query: {presets: ["env"]}},

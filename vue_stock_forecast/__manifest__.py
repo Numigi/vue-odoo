@@ -10,8 +10,8 @@
     'website': 'https://bit.ly/numigi-com',
     'license': 'LGPL-3',
     'category': 'Stock',
-    'summary': 'Add a dynamic stock forecast report using Vuejs.',
-    'depends': ['vue', 'vue_element_ui', 'sale_stock'],
+    'summary': 'A dynamic stock forecast report using Vuejs.',
+    'depends': ['vue_element_ui', 'stock'],
     'data': [
         'views/assets.xml',
         'views/menu.xml',

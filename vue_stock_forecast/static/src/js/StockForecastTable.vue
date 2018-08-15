@@ -1,7 +1,7 @@
 <template>
   <div class="stock-forecast-table">
     <el-table :data="rows" height="800" border>
-      <el-table-column :label="rowGroupLabel" width="300" fixed="left">
+      <el-table-column :label="rowGroupLabel" width="300" :fixed="firstColumnFixed">
         <template slot-scope="scope">
           <div>
             {{ scope.row.label }}
@@ -88,6 +88,10 @@ export default {
         translate: {
             type: Function,
             required: true,
+        },
+        firstColumnFixed: {
+            type: Boolean,
+            default: true,
         },
     },
     computed: {
