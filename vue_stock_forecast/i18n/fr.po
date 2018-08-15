@@ -106,6 +106,12 @@ msgid "Stock"
 msgstr "Stock"
 
 #. module: vue_stock_forecast
+#: model:ir.actions.client,name:vue_stock_forecast.stock_forecast_action
+#: model:ir.ui.menu,name:vue_stock_forecast.stock_forecast_menu
+msgid "Stock Forecast"
+msgstr "Prévision d'inventaire"
+
+#. module: vue_stock_forecast
 #. openerp-web
 #: code:addons/vue_stock_forecast/static/dist/vueStockForecast.js:0
 msgid "Stock Moves ({date_from} to {date_to})"
