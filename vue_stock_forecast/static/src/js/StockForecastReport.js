@@ -113,7 +113,7 @@ var StockForecastReport = Widget.extend({
             name: _t("Current Stocks"),
             views: [[false, "list"], [false, "form"]],
             type: "ir.actions.act_window",
-            domain: domain,
+            domain,
         });
     },
     /**
@@ -147,8 +147,31 @@ var StockForecastReport = Widget.extend({
             domain.push(["product_id.uom_id", "=", row.uom[0]]);
         }
 
-        if(this.$vm.locations.length){
-            var locationIds = this.$vm.locations.map((l) => l.id);
+        domain.concat(this.getStockMoveLocationDomain());
+
+        var actionName = (
+            _t("Stock Moves ({date_from} to {date_to})")
+            .replace("{date_from}", dateFrom)
+            .replace("{date_to}", dateTo)
+        );
+
+        this.do_action({
+            res_model: "stock.move",
+            name: actionName,
+            views: [[false, "list"], [false, "form"]],
+            type: "ir.actions.act_window",
+            domain,
+        });
+    },
+    /**
+     * Get the domain related to locations used for filtering stock moves.
+     *
+     * @returns {Array} the domain filter.
+     */
+    getStockMoveLocationDomain(){
+        var domain = [];
+        var locationIds = this.$vm.locations.map((l) => l.id);
+        if(locationIds.length){
             domain.push("|");
             domain.push("&");
             domain.push(["location_id", "child_of", locationIds]);
@@ -162,20 +185,7 @@ var StockForecastReport = Widget.extend({
             domain.push(["location_id.usage", "=", "internal"]);
             domain.push(["location_dest_id.usage", "=", "internal"]);
         }
-
-        var actionName = (
-            _t("Stock Moves ({date_from} to {date_to})")
-            .replace("{date_from}", dateFrom)
-            .replace("{date_to}", dateTo)
-        );
-
-        this.do_action({
-            res_model: "stock.move",
-            name: actionName,
-            views: [[false, "list"], [false, "form"]],
-            type: "ir.actions.act_window",
-            domain: domain,
-        });
+        return domain;
     },
     do_show(){
         this.$el.removeClass('o_hidden');

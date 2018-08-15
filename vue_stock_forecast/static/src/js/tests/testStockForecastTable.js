@@ -1,10 +1,10 @@
 
 import test from "ava"
-import ElementUI from 'element-ui'
-import Vue from 'vue'
+import ElementUI from "element-ui"
+import Vue from "vue"
 
 import StockForecastTable from "../StockForecastTable.vue"
-import pretty from 'pretty'
+import pretty from "pretty"
 
 Vue.use(ElementUI)
 
@@ -31,9 +31,9 @@ var propsData = {
     ],
     translate: (term) => term,
     firstColumnFixed: false,
-}
+};
 
-test("Render Forecast Table", async t => {
+test("Render Forecast Table", async (t) => {
     var Constructor = Vue.extend(StockForecastTable);
     var vm = new Constructor({propsData}).$mount();
     await vm.$nextTick();

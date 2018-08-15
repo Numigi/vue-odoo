@@ -6,59 +6,6 @@ var XmlReference = require("vue.XmlReference");
 var uomUnit = new XmlReference("product", "product_uom_unit");
 
 /**
- * Get the rows to display on the stock forecast table.
- *
- * Each returned row contains the following structure:
- * {
- *    product: {Object} the product if grouping by product,
- *    category: {Object} the product category if grouping by category,
- *    label: {String} the product or product category's display name,
- *    uom: {Array} the unit of measure [id, name],
- *    currentStock: {Number} the quantity in inventory,
- *    reserved: {Number} the reserved quantity in inventory,
- *    incoming: {Array} the incoming stock moves,
- *    outgoing: {Array} the outgoing stock moves,
- * }
- *
- * @param {Array} products - the filtered products
- * @param {Array} categories - the filtered product categories
- * @param {Array} locations - the filtered stock locations
- * @param {String} groupBy - the grouping of the rows (either 'product' or 'category')
- * @returns {Array} the data of the rows to display on the widget.
- */
-async function fetchRowsData(products, categories, locations, groupBy){
-    var allProducts = await getAllProducts(products, categories);
-    var allProductsData = await getProductData(allProducts, locations);
-
-    var productRows = allProducts.map((product) => {
-        var rowData = {
-            label: product.display_name,
-            product: product,
-            uom: product.uom_id,
-            currentStock: 0,
-            reserved: 0,
-            incoming: [],
-            outgoing: [],
-        }
-
-        var stockData = allProductsData.get(product.id);
-        rowData.currentStock = stockData.currentStock;
-        rowData.reserved = stockData.reserved;
-        rowData.incoming = stockData.incoming;
-        rowData.outgoing = stockData.outgoing;
-
-        return rowData;
-    });
-
-    if(groupBy === "category"){
-        var allCategories = await getAllCategories(categories);
-        return await groupRowsByCategory(productRows, allCategories);
-    }
-
-    return productRows;
-}
-
-/**
  * Get a complete array of products matching the selection.
  *
  * The returned array contains all products under the given categories
@@ -99,51 +46,6 @@ function getAllCategories(categories){
     );
 }
 
-/**
- * Get a mapping of stock data per product.
- *
- * @param {Array} products - the products for which to find the quantities
- * @param {Array} locations - the locations in which to find moves and quantities
- * @returns {Map} the stock data mapping.
- */
-async function getProductData(products, locations){
-    var incomingDeferred = getIncomingStockMoves(products, locations);
-    var outgoingDeferred = getOutgoingStockMoves(products, locations);
-    var stockDeferred = getStockQuants(products, locations);
-
-    var result = new Map();
-
-    // Initialise default values for each product.
-    products.forEach((product) => {
-        result.set(product.id, {
-            currentStock: 0,
-            reserved: 0,
-            incoming: [],
-            outgoing: [],
-        });
-    })
-
-    var incomingMoves = await incomingDeferred;
-    incomingMoves.forEach(move => {
-        var incoming = result.get(move.product_id[0]).incoming;
-        incoming.push({qty: move.product_qty, date: move.date_expected.slice(0, 10)});
-    });
-
-    var outgoingMoves = await outgoingDeferred;
-    outgoingMoves.forEach(move => {
-        var outgoing = result.get(move.product_id[0]).outgoing;
-        outgoing.push({qty: move.product_qty, date: move.date_expected.slice(0, 10)});
-    });
-
-    var quants = await stockDeferred;
-    quants.forEach(quant => {
-        var productData = result.get(quant.product_id[0]);
-        productData.currentStock += quant.quantity;
-        productData.reservedQuantity += quant.reserved_quantity;
-    });
-
-    return result;
-}
 
 /**
  * Group the given product rows by product category.
@@ -163,14 +65,14 @@ async function groupRowsByCategory(productRows, categories){
     var uomUnitId = await uomUnit.getId();
 
     var getMatchingCategoryRow = (category, uom) => {
-        var matchingRow = categoryRows.find(r => r.uom[0] === uom[0] && r.category === category);
+        var matchingRow = categoryRows.find((r) => r.uom[0] === uom[0] && r.category === category);
         if(matchingRow){
             return matchingRow;
         }
         var newRow = {
             label: uom[0] === uomUnitId ? category.display_name : category.display_name + " (" + uom[1] + ")",
-            category: category,
-            uom: uom,
+            category,
+            uom,
             currentStock: 0,
             reserved: 0,
             incoming: [],
@@ -180,7 +82,7 @@ async function groupRowsByCategory(productRows, categories){
         return newRow;
     }
 
-    var allProductIds = productRows.map(r => r.product.id);
+    var allProductIds = productRows.map((r) => r.product.id);
 
     var queries = categories.map(async (category) => {
         var query = (
@@ -194,7 +96,7 @@ async function groupRowsByCategory(productRows, categories){
         var products = await query.searchRead();
 
         products.forEach((product) => {
-            var productRow = productRows.find(r => r.product.id === product.id);
+            var productRow = productRows.find((r) => r.product.id === product.id);
 
             if(productRow){
                 var categoryRow = getMatchingCategoryRow(category, product.uom_id);
@@ -227,10 +129,10 @@ async function getIncomingStockMoves(products, locations){
         ])
     );
     if(products.length){
-        query.filter([["product_id", "in", products.map(p => p.id)]]);
+        query.filter([["product_id", "in", products.map((p) => p.id)]]);
     }
     if(locations.length){
-        query.filter([["location_dest_id", "child_of", locations.map(l => l.id)]]);
+        query.filter([["location_dest_id", "child_of", locations.map((l) => l.id)]]);
     }
     return query.searchRead();
 }
@@ -252,10 +154,10 @@ async function getOutgoingStockMoves(products, locations){
         ])
     );
     if(products.length){
-        query.filter([["product_id", "in", products.map(p => p.id)]]);
+        query.filter([["product_id", "in", products.map((p) => p.id)]]);
     }
     if(locations.length){
-        query.filter([["location_id", "child_of", locations.map(l => l.id)]]);
+        query.filter([["location_id", "child_of", locations.map((l) => l.id)]]);
     }
     return query.searchRead();
 }
@@ -275,12 +177,111 @@ async function getStockQuants(products, locations){
         ])
     )
     if(products.length){
-        query.filter([["product_id", "in", products.map(p => p.id)]]);
+        query.filter([["product_id", "in", products.map((p) => p.id)]]);
     }
     if(locations.length){
-        query.filter([["location_id", "child_of", locations.map(l => l.id)]]);
+        query.filter([["location_id", "child_of", locations.map((l) => l.id)]]);
     }
     return query.searchRead();
+}
+
+/**
+ * Get a mapping of stock data per product.
+ *
+ * @param {Array} products - the products for which to find the quantities
+ * @param {Array} locations - the locations in which to find moves and quantities
+ * @returns {Map} the stock data mapping.
+ */
+async function getProductData(products, locations){
+    var incomingDeferred = getIncomingStockMoves(products, locations);
+    var outgoingDeferred = getOutgoingStockMoves(products, locations);
+    var stockDeferred = getStockQuants(products, locations);
+
+    var result = new Map();
+
+    // Initialise default values for each product.
+    products.forEach((product) => {
+        result.set(product.id, {
+            currentStock: 0,
+            reserved: 0,
+            incoming: [],
+            outgoing: [],
+        });
+    });
+
+    var incomingMoves = await incomingDeferred;
+    incomingMoves.forEach((move) => {
+        var incoming = result.get(move.product_id[0]).incoming;
+        incoming.push({qty: move.product_qty, date: move.date_expected.slice(0, 10)});
+    });
+
+    var outgoingMoves = await outgoingDeferred;
+    outgoingMoves.forEach((move) => {
+        var outgoing = result.get(move.product_id[0]).outgoing;
+        outgoing.push({qty: move.product_qty, date: move.date_expected.slice(0, 10)});
+    });
+
+    var quants = await stockDeferred;
+    quants.forEach((quant) => {
+        var productData = result.get(quant.product_id[0]);
+        productData.currentStock += quant.quantity;
+        productData.reservedQuantity += quant.reserved_quantity;
+    });
+
+    return result;
+}
+
+/**
+ * Get the rows to display on the stock forecast table.
+ *
+ * Each returned row contains the following structure:
+ * {
+ *    product: {Object} the product if grouping by product,
+ *    category: {Object} the product category if grouping by category,
+ *    label: {String} the product or product category's display name,
+ *    uom: {Array} the unit of measure [id, name],
+ *    currentStock: {Number} the quantity in inventory,
+ *    reserved: {Number} the reserved quantity in inventory,
+ *    incoming: {Array} the incoming stock moves,
+ *    outgoing: {Array} the outgoing stock moves,
+ * }
+ *
+ * @param {Array} products - the filtered products
+ * @param {Array} categories - the filtered product categories
+ * @param {Array} locations - the filtered stock locations
+ * @param {String} groupBy - the grouping of the rows (either 'product' or 'category')
+ * @returns {Array} the data of the rows to display on the widget.
+ */
+async function fetchRowsData(products, categories, locations, groupBy){
+    var allProducts = await getAllProducts(products, categories);
+    var allProductsData = await getProductData(allProducts, locations);
+
+    var productRows = allProducts.map((product) => {
+        var rowData = {
+            label: product.display_name,
+            product,
+            uom: product.uom_id,
+            currentStock: 0,
+            reserved: 0,
+            incoming: [],
+            outgoing: [],
+        };
+
+        var stockData = allProductsData.get(product.id);
+        rowData.currentStock = stockData.currentStock;
+        rowData.reserved = stockData.reserved;
+        rowData.incoming = stockData.incoming;
+        rowData.outgoing = stockData.outgoing;
+
+        return rowData;
+    });
+
+    if(groupBy === "category"){
+        var allCategories = await getAllCategories(categories);
+        return await groupRowsByCategory(productRows, allCategories);
+    }
+
+    return productRows;
 }
 
 return fetchRowsData;
