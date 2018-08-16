@@ -26,25 +26,25 @@ query.searchRead().then((customers) => {
 })
 ```
 
-### Xml Reference
+### Xml References
 
-The XmlReference class allows to easily resolve an xml reference.
+The getXmlId function allows to easily retreive an xml id from Odoo.
+
+Example of usage:
 
 ```javascript
 odoo.define("my_module.myFeature", (require) => {
 
-var XmlReference = require("vue.XmlReference")
+var getXmlId = require("vue.getXmlId")
 
-route = XmlReference("stock", "route_warehouse0_mto")
-route.getId().then((routeId) => {
+getXmlId("stock.route_warehouse0_mto").then((routeId) => {
     // do something with the route id
 })
 
 })
 ```
 
-The http query for converting the reference into a record id is done only once and cached.
-Calling getId() multiple times will not trigger multiple http queries.
+Calling getXmlId() with the same reference multiple times will not trigger multiple http queries.
 
 ## Contributors
 

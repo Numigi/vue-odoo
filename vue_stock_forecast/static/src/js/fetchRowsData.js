@@ -1,9 +1,7 @@
 odoo.define("vue_stock_forecast.fetchRowsData", function(require){
 
 var QueryBuilder = require("vue.QueryBuilder");
-var XmlReference = require("vue.XmlReference");
-
-var uomUnit = new XmlReference("product", "product_uom_unit");
+var getXmlId = require("vue.getXmlId");
 
 /**
  * Get a complete array of products matching the selection.
@@ -62,7 +60,7 @@ function getAllCategories(categories){
  */
 async function groupRowsByCategory(productRows, categories){
     var categoryRows = [];
-    var uomUnitId = await uomUnit.getId();
+    var uomUnitId = await getXmlId("product.product_uom_unit");
 
     var getMatchingCategoryRow = (category, uom) => {
         var matchingRow = categoryRows.find((r) => r.uom[0] === uom[0] && r.category === category);

@@ -1,20 +1,24 @@
 <template>
-<div>
-    <el-select
-        v-model="items"
-        multiple filterable
-        remote :remote-method="_searchItems"
-        value-key="id"
-        @change="_onChange"
-        :placeholder="placeholder"
-        ref="select"
-        >
-        <el-option
-            v-for="item in selection"
-            :key="item.id" :label="item.name" :value="item">
-        </el-option>
-    </el-select>
-</div>
+<el-select
+    v-model="items"
+    multiple filterable
+    remote
+    value-key="id"
+    :remote-method="searchItems"
+    @focus="onFocus"
+    @change="onChange"
+    :placeholder="placeholder"
+    ref="select"
+    >
+    <el-option
+        v-for="item in selection"
+        :key="item.id" :label="item.name" :value="item">
+    </el-option>
+    <el-option
+        v-for="item in invisibleItems"
+        :key="item.id" :label="item.name" :value="item" v-show="false">
+    </el-option>
+</el-select>
 </template>
 <script>
 
@@ -40,29 +44,29 @@ export default {
             selection: [],
         };
     },
-    watch: {
-        items(){
-            this._addMissingItems();
+    computed: {
+        /**
+         * These extra items are used to make sure that the el-option widget properly displays
+         * the label on each tag.
+         */
+        invisibleItems(){
+            var availableKeys = this.selection.map(p => p.id);
+            return this.items.filter(p => availableKeys.indexOf(p.id) === -1);
         },
     },
     methods: {
-        _searchItems(query){
+        onFocus(){
+            this.searchItems(this.$refs.select.query);
+        },
+        searchItems(query){
             this.search(query).then(result => {
                 var itemsFound = result.map(r => {
                     return {id: r[0], name: r[1]};
                 });
                 this.selection = itemsFound;
-                this._addMissingItems();
             });
         },
-        _addMissingItems(){
-            var availableKeys = this.selection.map(p => p.id);
-            var missingItems = this.items.filter(p => availableKeys.indexOf(p.id) === undefined);
-            if(missingItems.length){
-                this.selection = this.selection.concat(missingItems);
-            }
-        },
-        _onChange(value){
+        onChange(value){
             this.$emit("change", value);
         },
     },

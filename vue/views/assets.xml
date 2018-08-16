@@ -10,7 +10,7 @@
     <template id="assets_backend_with_vuejs" name="assets_backend_with_vuejs" inherit_id="web.assets_backend">
         <xpath expr="." position="inside">
             <script type="text/javascript" src="/vue/static/src/js/QueryBuilder.js"></script>
-            <script type="text/javascript" src="/vue/static/src/js/XmlReference.js"></script>
+            <script type="text/javascript" src="/vue/static/src/js/getXmlId.js"></script>
         </xpath>
     </template>
 
