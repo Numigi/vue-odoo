@@ -42,32 +42,37 @@ export default {
         return {
             items: [],
             selection: [],
+            invisibleItems: [],
         };
     },
-    computed: {
-        /**
-         * These extra items are used to make sure that the el-option widget properly displays
-         * the label on each tag.
-         */
-        invisibleItems(){
-            var availableKeys = this.selection.map(p => p.id);
-            return this.items.filter(p => availableKeys.indexOf(p.id) === -1);
+    watch: {
+        items(){
+            this.updateInvisibleItems();
         },
     },
     methods: {
+        setItems(records){
+            this.items = records.map((r) => {return {id: r[0], name: r[1]}});
+        },
         onFocus(){
             this.searchItems(this.$refs.select.query);
         },
         searchItems(query){
-            this.search(query).then(result => {
-                var itemsFound = result.map(r => {
-                    return {id: r[0], name: r[1]};
-                });
-                this.selection = itemsFound;
+            this.search(query).then(records => {
+                this.selection = records.map((r) => {return {id: r[0], name: r[1]}});
+                this.updateInvisibleItems();
             });
         },
         onChange(value){
             this.$emit("change", value);
+        },
+        /**
+         * These extra items are used to make sure that the el-option widget properly displays
+         * the label on each tag.
+         */
+        updateInvisibleItems(){
+            var availableKeys = this.selection.map((item) => item.id);
+            this.invisibleItems = this.items.filter((item) => availableKeys.indexOf(item.id) === -1);
         },
     },
 };

@@ -33,6 +33,12 @@ msgstr "Stocks en cours"
 msgid "End Date"
 msgstr "Date de fin"
 
+#. module: stock
+#: model:ir.ui.view,arch_db:stock.product_form_view_procurement_button
+#: model:ir.ui.view,arch_db:stock.product_template_form_view_procurement_button
+msgid "<span class=\"o_stat_text\">Forecasted</span>"
+msgstr "<span class=\"o_stat_text\">Prévisions</span>"
+
 #. module: vue_stock_forecast
 #. openerp-web
 #: code:addons/vue_stock_forecast/static/dist/vueStockForecast.js:0
@@ -108,6 +114,8 @@ msgstr "Stock"
 #. module: vue_stock_forecast
 #: model:ir.actions.client,name:vue_stock_forecast.stock_forecast_action
 #: model:ir.ui.menu,name:vue_stock_forecast.stock_forecast_menu
+#: model:ir.ui.view,arch_db:vue_stock_forecast.product_form_with_stock_forecast_smart_button
+#: model:ir.ui.view,arch_db:vue_stock_forecast.product_template_form_with_stock_forecast_smart_button
 msgid "Stock Forecast"
 msgstr "Prévision d'inventaire"
 

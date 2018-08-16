@@ -15,6 +15,7 @@
     'data': [
         'views/assets.xml',
         'views/menu.xml',
+        'views/product.xml',
     ],
     'installable': True,
 }

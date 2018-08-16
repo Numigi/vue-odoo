@@ -4,7 +4,7 @@
     <el-card class="stock-forecast-report__filters">
         <el-form :model="$data" label-width="150px" label-position="left" inline>
             <el-form-item :label="translate('Location')">
-                <many2many :search="searchStockLocations" @change="onLocationChange"></many2many>
+                <many2many ref="locations" :search="searchStockLocations" @change="onLocationChange"></many2many>
             </el-form-item>
         </el-form>
 
@@ -19,10 +19,10 @@
                 </el-select>
             </el-form-item>
             <el-form-item :label="translate('Products')" v-show="rowGroupBy === 'product'">
-                <many2many :search="searchProducts" @change="onProductChange"></many2many>
+                <many2many ref="products" :search="searchProducts" @change="onProductChange"></many2many>
             </el-form-item>
             <el-form-item :label="translate('Product Categories')">
-                <many2many :search="searchProductCategories" @change="onProductCategoryChange"></many2many>
+                <many2many ref="categories" :search="searchProductCategories" @change="onProductCategoryChange"></many2many>
             </el-form-item>
         </el-form>
 
@@ -122,6 +122,18 @@ export default {
         },
     },
     methods: {
+        setProducts(products){
+            this.products = products.map((r) => {return {id: r[0], name: r[1]}});
+            this.$refs.products.setItems(products);
+        },
+        setProductCategories(categories){
+            this.categories = categories.map((r) => {return {id: r[0], name: r[1]}});
+            this.$refs.categories.setItems(categories);
+        },
+        setLocations(locations){
+            this.locations = locations.map((r) => {return {id: r[0], name: r[1]}});
+            this.$refs.locations.setItems(locations);
+        },
         onRowGroupByChange(value){
             this.onFilterChange();
         },
