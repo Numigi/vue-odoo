@@ -1,0 +1,21 @@
+{
+  "name": "vue_element_ui",
+  "version": "1.0.0",
+  "description": "Vue Components for Odoo using the Element-UI assets.",
+  "devDependencies": {
+    "ava": "^0.25.0",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.5",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "vue": "^2.5.17",
+    "vue-loader": "^15.3.0",
+    "vue-template-compiler": "^2.5.17",
+    "webpack": "^4.16.5"
+  },
+  "author": "Numigi (tm) and all its contributors (https://bit.ly/numigiens)",
+  "license": "LGPL-3.0-or-later",
+  "dependencies": {
+    "webpack-cli": "^3.1.0"
+  }
+}

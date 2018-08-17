@@ -53,12 +53,12 @@ msgstr "OK"
 #. module: vue_element_ui
 #: code:addons/vue_element_ui/static/src/js/i18n.js:0
 msgid "el.datepicker.selectDate"
-msgstr "Choisir date"
+msgstr "Sélectionner la date"
 
 #. module: vue_element_ui
 #: code:addons/vue_element_ui/static/src/js/i18n.js:0
 msgid "el.datepicker.selectTime"
-msgstr "Choisir horaire"
+msgstr "Sélectionner l'heure"
 
 #. module: vue_element_ui
 #: code:addons/vue_element_ui/static/src/js/i18n.js:0
@@ -278,7 +278,7 @@ msgstr "Aucune donnée"
 #. module: vue_element_ui
 #: code:addons/vue_element_ui/static/src/js/i18n.js:0
 msgid "el.select.placeholder"
-msgstr "Choisi"
+msgstr "Sélectionner"
 
 #. module: vue_element_ui
 #: code:addons/vue_element_ui/static/src/js/i18n.js:0
@@ -293,7 +293,7 @@ msgstr "Chargement"
 #. module: vue_element_ui
 #: code:addons/vue_element_ui/static/src/js/i18n.js:0
 msgid "el.cascader.placeholder"
-msgstr "Choisi"
+msgstr "Sélectionner"
 
 #. module: vue_element_ui
 #: code:addons/vue_element_ui/static/src/js/i18n.js:0

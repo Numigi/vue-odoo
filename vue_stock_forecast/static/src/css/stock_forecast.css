@@ -1,0 +1,25 @@
+.stock-forecast-report {
+    margin: 8px;
+    max-width: 1651px;
+}
+
+.stock-forecast-report .el-select{
+    width: 220px;
+}
+
+.stock-forecast-report .el-select input{
+    min-width: 150px;
+}
+
+.stock-forecast-table table {
+    width: 100%;
+}
+
+.stock-forecast-table__link {
+    cursor: pointer;
+    color: #409eff;
+}
+
+.stock-forecast-report .el-form-item:not(:first-child){
+    margin-left: 50px;
+}

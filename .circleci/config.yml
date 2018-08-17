@@ -12,6 +12,10 @@ jobs:
           name: Build -- Init Database
           command: docker-compose run --rm odoo odoo --stop-after-init -i main
 
+       - run:
+          name: Run Javascript Tests
+          command: docker-compose run --rm client npm test
+
        - store_test_results:
           path: .log
 
