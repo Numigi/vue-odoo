@@ -8,7 +8,7 @@ var QueryBuilder = require("vue.QueryBuilder");
  */
 var XmlReference = Class.extend({
     init(ref){
-        var parts = ref.split('.');
+        var parts = ref.split(".");
         if(parts.length === 2){
             this._module = parts[0];
             this._name = parts[1];

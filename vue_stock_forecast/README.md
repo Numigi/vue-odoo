@@ -15,11 +15,11 @@ When clicking on a blue amount, the detail that composes this amount is displaye
 
 ![Report Links](static/description/report_links.png?raw=true)
 
-Here, when clicking on the amount in stock `8`, the list of Quants is displayed:
+Here above, when clicking on the amount in stock `8`, the list of Quants is displayed:
 
 ![Stock Quants](static/description/stock_quants.png?raw=true)
 
-Here, when clicking on the amount for a given month `128 (+120)`, the list of stock moves is displayed:
+When clicking on the amount for a given month `128 (+120)`, the list of stock moves is displayed:
 
 ![Stock Moves](static/description/stock_moves.png?raw=true)
 
@@ -46,6 +46,16 @@ By default 6 columns of stock moves are displayed.
 By selecting specific `Start Date` and `End Date`, you can see more columns.
 
 ![More Columns](static/description/report_with_more_columns.png?raw=true)
+
+## Smart Button
+
+A smart button is added on the form view of products in order to show the report.
+
+![Product Form](static/description/product_form.png?raw=true)
+
+When accessing the report from a product template with multiple variants, the report is displayed for all variants.
+
+![Report With Variants](static/description/report_with_product_variants.png?raw=true)
 
 ## Contributors
 

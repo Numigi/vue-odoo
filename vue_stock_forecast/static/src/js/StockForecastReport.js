@@ -2,7 +2,7 @@ odoo.define("vue_stock_forecast.StockForecastReport", function (require) {
 "use strict";
 
 var QueryBuilder = require("vue.QueryBuilder");
-var ControlPanelMixin = require('web.ControlPanelMixin');
+var ControlPanelMixin = require("web.ControlPanelMixin");
 var core = require("web.core");
 var Widget = require("web.Widget");
 var data = require("web.data");
@@ -48,7 +48,7 @@ var StockForecastReport = Widget.extend(ControlPanelMixin, {
         if(context.product_id){
             var query = new QueryBuilder("product.product", ["display_name"]);
             query.filter([["id", "=", context.product_id]]);
-            var products = (await query.searchRead()).map(p => [p.id, p.display_name]);
+            var products = (await query.searchRead()).map((p) => [p.id, p.display_name]);
             this.$vm.setProducts(products);
             this.onFilterChange();
         }
@@ -61,7 +61,7 @@ var StockForecastReport = Widget.extend(ControlPanelMixin, {
         if(context.product_template_id){
             var query = new QueryBuilder("product.product", ["display_name"]);
             query.filter([["product_tmpl_id", "=", context.product_template_id]]);
-            var products = (await query.searchRead()).map(p => [p.id, p.display_name]);
+            var products = (await query.searchRead()).map((p) => [p.id, p.display_name]);
             this.$vm.setProducts(products);
             this.onFilterChange();
         }
@@ -241,7 +241,7 @@ var StockForecastReport = Widget.extend(ControlPanelMixin, {
     destroy(){
         var parentNode = this.$vm.$el.parentNode;
         if(parentNode){
-            parentNode.removeChild(this.$vm.$el)
+            parentNode.removeChild(this.$vm.$el);
         }
         this.$vm.$destroy();
         this._super.apply(this, arguments);
@@ -253,8 +253,8 @@ var StockForecastReport = Widget.extend(ControlPanelMixin, {
         var parent = this.getParent();
         var parentIsAction = Boolean(parent.get_breadcrumbs);
         if(parentIsAction){
-            var cp_status = {breadcrumbs: parent.get_breadcrumbs()};
-            this.update_control_panel(cp_status);
+            var controlPanelStatus = {breadcrumbs: parent.get_breadcrumbs()};
+            this.update_control_panel(controlPanelStatus);
         }
     },
 });

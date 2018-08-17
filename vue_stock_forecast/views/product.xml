@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
-    <!-- Replace the stock moves button with a button that points to the dynamic report. -->
     <record id="product_form_with_stock_forecast_smart_button" model="ir.ui.view">
         <field name="name">Product Form With Stock Forecast Smart Button</field>
         <field name="model">product.product</field>

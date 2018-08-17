@@ -19,6 +19,8 @@ function getAllProducts(products, categories){
     return (
         new QueryBuilder("product.product", ["id", "uom_id", "display_name"])
         .filter([
+            "&",
+            ["type", "in", ["consu", "product"]],
             "|",
             ["categ_id", "child_of", categories.map((c) => c.id)],
             ["id", "in", products.map((p) => p.id)],
