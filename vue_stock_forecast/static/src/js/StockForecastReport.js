@@ -102,6 +102,9 @@ var StockForecastReport = Widget.extend(ControlPanelMixin, {
         return this._rpc({
             model,
             method: "name_search",
+            params: {
+                context: odoo.session_info.user_context,
+            },
             kwargs: {
                 name: query,
                 args: domain,
@@ -179,7 +182,6 @@ var StockForecastReport = Widget.extend(ControlPanelMixin, {
         var dayAfterDateTo = moment(dateTo).add(1, "day").format("YYYY-MM-DD");
         var domain = [
             ["state", "not in", ["done", "cancel"]],
-            "|",
             ["date_expected", ">=", dateFrom],
             ["date_expected", "<", dayAfterDateTo],
         ];

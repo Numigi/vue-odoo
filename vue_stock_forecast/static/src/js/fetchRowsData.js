@@ -225,7 +225,7 @@ async function getProductData(products, locations){
     quants.forEach((quant) => {
         var productData = result.get(quant.product_id[0]);
         productData.currentStock += quant.quantity;
-        productData.reservedQuantity += quant.reserved_quantity;
+        productData.reserved += quant.reserved_quantity;
     });
 
     return result;

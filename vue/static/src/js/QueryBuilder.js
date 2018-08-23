@@ -37,6 +37,9 @@ var QueryBuilder = Class.extend({
         return rpc.query({
             model: this._model,
             method: "search_read",
+            params: {
+                context: odoo.session_info.user_context,
+            },
             args: [this._domain, this._fields],
         });
     },
