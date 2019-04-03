@@ -4,7 +4,7 @@ odoo.define("vue_stock_forecast.StockForecastReport", function (require) {
 var QueryBuilder = require("vue.QueryBuilder");
 var ControlPanelMixin = require("web.ControlPanelMixin");
 var core = require("web.core");
-var AbstractAction = require('web.AbstractAction');
+var AbstractAction = require("web.AbstractAction");
 var data = require("web.data");
 
 var fetchRowsData = require("vue_stock_forecast.fetchRowsData");
