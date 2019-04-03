@@ -4,7 +4,7 @@ odoo.define("vue_stock_forecast.StockForecastReport", function (require) {
 var QueryBuilder = require("vue.QueryBuilder");
 var ControlPanelMixin = require("web.ControlPanelMixin");
 var core = require("web.core");
-var Widget = require("web.Widget");
+var AbstractAction = require("web.AbstractAction");
 var data = require("web.data");
 
 var fetchRowsData = require("vue_stock_forecast.fetchRowsData");
@@ -12,7 +12,7 @@ var ReportComponent = Vue.extend(vueStockForecast.StockForecastReport);
 
 var _t = core._t;
 
-var StockForecastReport = Widget.extend(ControlPanelMixin, {
+var StockForecastReport = AbstractAction.extend(ControlPanelMixin, {
     async start(){
         await this._super();
 

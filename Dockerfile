@@ -1,4 +1,4 @@
-FROM quay.io/numigi/odoo-public:11.0
+FROM quay.io/numigi/odoo-public:12.latest
 MAINTAINER numigi <contact@numigi.com>
 
 COPY vue /mnt/extra-addons/vue

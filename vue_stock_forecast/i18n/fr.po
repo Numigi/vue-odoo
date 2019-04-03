@@ -18,18 +18,21 @@ msgstr ""
 #. module: vue_stock_forecast
 #. openerp-web
 #: code:addons/vue_stock_forecast/static/dist/vueStockForecast.js:0
+#, python-format
 msgid "Columns"
 msgstr "Colonnes"
 
 #. module: vue_stock_forecast
 #. openerp-web
 #: code:addons/vue_stock_forecast/static/dist/vueStockForecast.js:0
+#, python-format
 msgid "Current Stocks"
 msgstr "Stocks en cours"
 
 #. module: vue_stock_forecast
 #. openerp-web
 #: code:addons/vue_stock_forecast/static/dist/vueStockForecast.js:0
+#, python-format
 msgid "End Date"
 msgstr "Date de fin"
 
@@ -42,91 +45,105 @@ msgstr "<span class=\"o_stat_text\">Prévisions</span>"
 #. module: vue_stock_forecast
 #. openerp-web
 #: code:addons/vue_stock_forecast/static/dist/vueStockForecast.js:0
+#, python-format
 msgid "Available"
 msgstr "Disponible"
 
 #. module: vue_stock_forecast
 #. openerp-web
 #: code:addons/vue_stock_forecast/static/dist/vueStockForecast.js:0
+#, python-format
 msgid "Location"
 msgstr "Emplacement"
 
 #. module: vue_stock_forecast
 #. openerp-web
 #: code:addons/vue_stock_forecast/static/dist/vueStockForecast.js:0
+#, python-format
 msgid "Product Categories"
 msgstr "Catégories d'articles"
 
 #. module: vue_stock_forecast
 #. openerp-web
 #: code:addons/vue_stock_forecast/static/dist/vueStockForecast.js:0
+#, python-format
 msgid "Product Category"
 msgstr "Catégorie d'article"
 
 #. module: vue_stock_forecast
 #. openerp-web
 #: code:addons/vue_stock_forecast/static/dist/vueStockForecast.js:0
+#, python-format
 msgid "Product"
 msgstr "Article"
 
 #. module: vue_stock_forecast
 #. openerp-web
 #: code:addons/vue_stock_forecast/static/dist/vueStockForecast.js:0
+#, python-format
 msgid "Products"
 msgstr "Articles"
 
 #. module: vue_stock_forecast
 #. openerp-web
 #: code:addons/vue_stock_forecast/static/dist/vueStockForecast.js:0
+#, python-format
 msgid "Rows"
 msgstr "Lignes"
 
 #. module: vue_stock_forecast
 #. openerp-web
 #: code:addons/vue_stock_forecast/static/dist/vueStockForecast.js:0
+#, python-format
 msgid "Day"
 msgstr "Jour"
 
 #. module: vue_stock_forecast
 #. openerp-web
 #: code:addons/vue_stock_forecast/static/dist/vueStockForecast.js:0
+#, python-format
 msgid "Month"
 msgstr "Mois"
 
 #. module: vue_stock_forecast
 #. openerp-web
 #: code:addons/vue_stock_forecast/static/dist/vueStockForecast.js:0
+#, python-format
 msgid "Reserved"
 msgstr "Réservé"
 
 #. module: vue_stock_forecast
 #. openerp-web
 #: code:addons/vue_stock_forecast/static/dist/vueStockForecast.js:0
+#, python-format
 msgid "Start Date"
 msgstr "Date de début"
 
 #. module: vue_stock_forecast
 #. openerp-web
 #: code:addons/vue_stock_forecast/static/dist/vueStockForecast.js:0
+#, python-format
 msgid "Stock"
 msgstr "Stock"
 
 #. module: vue_stock_forecast
 #: model:ir.actions.client,name:vue_stock_forecast.stock_forecast_action
 #: model:ir.ui.menu,name:vue_stock_forecast.stock_forecast_menu
-#: model:ir.ui.view,arch_db:vue_stock_forecast.product_form_with_stock_forecast_smart_button
-#: model:ir.ui.view,arch_db:vue_stock_forecast.product_template_form_with_stock_forecast_smart_button
+#: model_terms:ir.ui.view,arch_db:vue_stock_forecast.product_form_with_stock_forecast_smart_button
+#: model_terms:ir.ui.view,arch_db:vue_stock_forecast.product_template_form_with_stock_forecast_smart_button
 msgid "Stock Forecast"
 msgstr "Prévision d'inventaire"
 
 #. module: vue_stock_forecast
 #. openerp-web
 #: code:addons/vue_stock_forecast/static/dist/vueStockForecast.js:0
+#, python-format
 msgid "Stock Moves ({date_from} to {date_to})"
 msgstr "Mouvements d'inventaire (du {date_from} au {date_to})"
 
 #. module: vue_stock_forecast
 #. openerp-web
 #: code:addons/vue_stock_forecast/static/dist/vueStockForecast.js:0
+#, python-format
 msgid "Week"
 msgstr "Semaine"
