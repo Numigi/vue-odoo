@@ -10,6 +10,13 @@
     "license": "LGPL-3",
     "category": "Other",
     "summary": "Install all addons required for testing.",
-    "depends": ["vue", "vue_element_ui", "vue_backend", "vue_frontend", "vue_router",],
+    "depends": [
+        "vue",
+        "vue_element_ui",
+        "vue_backend",
+        "vue_frontend",
+        "vue_router",
+        "vue_stock_forecast",
+    ],
     "installable": True,
 }
