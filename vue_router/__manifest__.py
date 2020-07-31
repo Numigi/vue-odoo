@@ -10,7 +10,7 @@
     'license': 'LGPL-3',
     'category': 'Web',
     'summary': 'Integrate vue-router with Odoo frontend.',
-    'depends': ['vue'],
+    'depends': ['vue_frontend'],
     'data': ['views/assets.xml'],
     'installable': True,
 }

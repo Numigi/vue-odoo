@@ -76,7 +76,7 @@ Different Odoo modules may define their own routes.
 
 The RouterFactory Instance
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
-The module defines a singleton in javascript that allows to register routes to the Odoo frontend.
+The module defines a singleton ``RouterFactory`` in javascript that allows to register routes to the Odoo frontend.
 
 This object has 2 methods:
 
