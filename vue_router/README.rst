@@ -62,10 +62,12 @@ Inside other javascript files, you may register your routes:
     }
     const routerFactory = require("vue_router.routerFactory");
     const routerFactory.addRoutes(
-        {
-            path: "/my/hello/world",
-            component: HelloWorld,
-        }
+        [
+            {
+                path: "/my/hello/world",
+                component: HelloWorld,
+            }
+        ]
     )
 
 The reason to seperate the routes from the application is to make your application extendable.
