@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="assets_frontend" name="assets_frontend" inherit_id="web.assets_frontend">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/vue_router/static/lib/vue-router.js"></script>
+            <script type="text/javascript" src="/vue_router/static/src/js/router_factory.js"></script>
+        </xpath>
+    </template>
+
+</odoo>

@@ -13,6 +13,7 @@
     'depends': [
         'vue',
         'vue_element_ui',
+        'vue_router',
     ],
     'installable': True,
 }
