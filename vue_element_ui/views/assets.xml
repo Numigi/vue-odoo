@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <template id="assets_common_with_element_ui" name="assets_common_with_element_ui" inherit_id="web.assets_common">
+    <template id="vue_assets" name="vue_assets" inherit_id="vue.vue_assets">
         <xpath expr="." position="inside">
             <script type="text/javascript" src="/vue_element_ui/static/lib/element-ui.js"></script>
             <link rel="stylesheet" type="text/css" href="/vue_element_ui/static/lib/element-ui.css"/>
