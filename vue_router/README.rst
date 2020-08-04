@@ -61,7 +61,7 @@ Inside other javascript files, you may register your routes:
         template: `<div>Hello World</div>`,
     }
     const routerFactory = require("vue_router.routerFactory");
-    const routerFactory.addRoutes(
+    routerFactory.addRoutes(
         [
             {
                 path: "/my/hello/world",

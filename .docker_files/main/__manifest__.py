@@ -17,6 +17,7 @@
         "vue_frontend",
         "vue_router",
         "vue_stock_forecast",
+        "vuex",
     ],
     "installable": True,
 }
