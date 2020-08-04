@@ -4,13 +4,6 @@ odoo.define("vuex.store", function (require) {
 const Class = require("web.Class");
 
 Vue.use(Vuex)
-return new Vuex.Store({
-	actions: {
-		hello(context) {
-			console.log("hello")
-		}
-	},
-	modules: []
-});
+return new Vuex.Store({ modules: [] });
 
 });
