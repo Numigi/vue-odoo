@@ -15,6 +15,7 @@
         "vue_element_ui",
         "vue_backend",
         "vue_frontend",
+        "vue_i18n",
         "vue_router",
         "vue_stock_forecast",
         "vuex",
