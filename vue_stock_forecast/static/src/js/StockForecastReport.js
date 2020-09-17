@@ -22,6 +22,7 @@ var StockForecastReport = Widget.extend(ControlPanelMixin, {
                 searchProducts: (query) => this.searchProducts(query),
                 searchProductCategories: (query) => this.searchProductCategories(query),
                 searchStockLocations: (query) => this.searchStockLocations(query),
+                searchSuppliers: (query) => this.searchSuppliers(query),
 
                 // Function called when a filter changed
                 onFilterChange: () => this.onFilterChange(),
@@ -98,6 +99,15 @@ var StockForecastReport = Widget.extend(ControlPanelMixin, {
     searchStockLocations(query){
         return this._nameSearchQuery("stock.location", query, [["usage", "=", "internal"]]);
     },
+    /**
+     * Search stock suppliers by name.
+     *
+     * @param {String} query - the expression to search.
+     * @returns {Array[Object]} - the res.partner records found.
+     */
+    searchSuppliers(query){
+        return this._nameSearchQuery("res.partner", query, [["supplier", "=", true]]);
+    },
     _nameSearchQuery(model, query, domain, limit){
         return this._rpc({
             model,
@@ -118,8 +128,13 @@ var StockForecastReport = Widget.extend(ControlPanelMixin, {
             return;
         }
 
-        var rows = await fetchRowsData(
-            this.$vm.products, this.$vm.productCategories, this.$vm.locations, this.$vm.rowGroupBy);
+        var rows = await fetchRowsData({
+            products: this.$vm.products,
+            categories: this.$vm.productCategories,
+            locations: this.$vm.locations,
+            suppliers: this.$vm.suppliers,
+            groupBy: this.$vm.rowGroupBy,
+        });
         this.$vm.rows = rows.sort((r1, r2) => r1.label > r2.label);
     },
     /**
