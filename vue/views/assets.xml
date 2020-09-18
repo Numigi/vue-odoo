@@ -1,17 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <template id="assets_common_with_vuejs" name="assets_common_with_vuejs" inherit_id="web.assets_common">
-        <xpath expr="." position="inside">
-            <script type="text/javascript" src="/vue/static/lib/vue.js"></script>
-        </xpath>
-    </template>
-
-    <template id="assets_backend_with_vuejs" name="assets_backend_with_vuejs" inherit_id="web.assets_backend">
-        <xpath expr="." position="inside">
-            <script type="text/javascript" src="/vue/static/src/js/QueryBuilder.js"></script>
-            <script type="text/javascript" src="/vue/static/src/js/getXmlId.js"></script>
-        </xpath>
+    <template id="vue_assets" name="vue_assets">
+        <script type="text/javascript" src="/vue/static/lib/vue.js"></script>
+        <script type="text/javascript" src="/vue/static/src/js/QueryBuilder.js"></script>
+        <script type="text/javascript" src="/vue/static/src/js/getXmlId.js"></script>
     </template>
 
 </odoo>
