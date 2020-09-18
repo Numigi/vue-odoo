@@ -6,7 +6,7 @@
             <el-form-item :label="translate('Location')">
                 <many2many ref="locations" :search="searchStockLocations" @change="onLocationChange"></many2many>
             </el-form-item>
-            <el-form-item :label="translate('Prefered Supplier')">
+            <el-form-item :label="translate('Preferred Supplier')">
                 <many2many ref="suppliers" :search="searchSuppliers" @change="onSupplierChange"></many2many>
             </el-form-item>
         </el-form>
