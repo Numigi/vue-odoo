@@ -1,7 +1,11 @@
 # © 2020 - today Numigi (tm) and all its contributors (https://bit.ly/numigiens)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from odoo import models
+import pytz
+from datetime import datetime
+from odoo import api, models
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT, DEFAULT_SERVER_DATE_FORMAT
+from odoo.osv.expression import OR
 
 
 class VueStockForecast(models.AbstractModel):
@@ -9,6 +13,7 @@ class VueStockForecast(models.AbstractModel):
     _name = "vue.stock.forecast"
     _description = "Vue Stock Forecast"
 
+    @api.model
     def fetch(self, options):
         stock_data = self._get_stock_data(options)
 
@@ -24,18 +29,18 @@ class VueStockForecast(models.AbstractModel):
 
     def _get_stock_data(self, options):
         products = self._get_products(options)
-        result = {p.id: self._make_row_data(p) for p in products}
+        result = {p: self._make_row_data(p) for p in products}
 
         incoming = self._get_incoming_stock_moves(products, options)
         for move in incoming:
             result[move.product_id]["incoming"].append(
-                {"qty": move.product_qty, "date": move.date_expected}
+                {"qty": move.product_qty, "date": self._format_date(move.date_expected)}
             )
 
         outgoing = self._get_outgoing_stock_moves(products, options)
         for move in outgoing:
             result[move.product_id]["outgoing"].append(
-                {"qty": move.product_qty, "date": move.date_expected}
+                {"qty": move.product_qty, "date": self._format_date(move.date_expected)}
             )
 
         quants = self._get_stock_quants(products, options)
@@ -45,18 +50,54 @@ class VueStockForecast(models.AbstractModel):
 
         return result
 
+    def _format_date(self, naive_datetime_str):
+        naive_datetime = datetime.strptime(naive_datetime_str, DEFAULT_SERVER_DATETIME_FORMAT)
+        utc_datetime = pytz.utc.localize(naive_datetime)
+        tz = self._context.get("tz") or "UCT"
+        tz_datetime = utc_datetime.astimezone(pytz.timezone(tz))
+        return datetime.strftime(tz_datetime, DEFAULT_SERVER_DATE_FORMAT)
+
     def _get_products(self, options):
-        products = self.env["product.product"].search([
-            "|",
-            ["categ_id", "child_of", options.get("categories") or []],
-            ["id", "in", options["products"]],
-        ])
+        product_ids = options.get("products") or []
+        category_ids = options.get("categories") or []
+        supplier_ids = options.get("suppliers") or []
+
+        if not product_ids and not category_ids and not supplier_ids:
+            return self.env["product.product"]
+
+        domain = []
+
+        if product_ids:
+            domain = OR([domain, [("id", "in", product_ids)]])
+
+        if category_ids:
+            domain = OR([domain, [("categ_id", "child_of", category_ids)]])
+
+        if supplier_ids:
+            supplier_domain = self._get_supplier_domain(supplier_ids)
+            domain = OR([domain, supplier_domain])
+
+        products = self.env["product.product"].search(domain)
         return products.filtered(lambda p: p.type in ("product", "consu"))
+
+    def _get_supplier_domain(self, supplier_ids):
+        supplier_info = self.env["product.supplierinfo"].search([
+            ("name.commercial_partner_id", "in", supplier_ids),
+        ])
+        products = self.env["product.product"]
+
+        for info in supplier_info:
+            if info.product_id:
+                products |= info.product_id
+            else:
+                products |= info.product_tmpl_id.product_variant_ids
+
+        return [("id", "in", products.ids)]
 
     def _make_row_data(self, product):
         return {
             "label": product.display_name,
-            "product_id": product.id,
+            "productId": product.id,
             "uom": product.uom_id,
             "currentStock": 0,
             "reserved": 0,
@@ -112,16 +153,15 @@ class VueStockForecast(models.AbstractModel):
         all_categories = self._get_all_categories(options)
 
         def get_matching_row(category, uom):
-            index = (category.id, uom.id)
-            row = rows.get(index)
-            if not row:
+            index = (category, uom)
+            if index not in rows:
                 rows[index] = self._make_empty_category_row(category, uom)
-            return row
+            return rows[index]
 
         for category in all_categories:
             for product in self._get_products_from_category(category, stock_data):
                 row = get_matching_row(category, product.uom_id)
-                product_data = stock_data.get(product)
+                product_data = stock_data[product]
                 row["currentStock"] += product_data["currentStock"]
                 row["reserved"] += product_data["reserved"]
                 row["incoming"].extend(product_data["incoming"])

@@ -7,7 +7,6 @@ var core = require("web.core");
 var Widget = require("web.Widget");
 var data = require("web.data");
 
-var fetchRowsData = require("vue_stock_forecast.fetchRowsData");
 var ReportComponent = Vue.extend(vueStockForecast.StockForecastReport);
 
 var _t = core._t;
@@ -112,9 +111,7 @@ var StockForecastReport = Widget.extend(ControlPanelMixin, {
         return this._rpc({
             model,
             method: "name_search",
-            params: {
-                context: odoo.session_info.user_context,
-            },
+            params: { context: odoo.session_info.user_context },
             kwargs: {
                 name: query,
                 args: domain,
@@ -123,19 +120,23 @@ var StockForecastReport = Widget.extend(ControlPanelMixin, {
         });
     },
     async onFilterChange(products){
-        if(!this.$vm.products.length && !this.$vm.productCategories.length){
-            this.$vm.rows = [];
-            return;
-        }
-
-        var rows = await fetchRowsData({
-            products: this.$vm.products,
-            categories: this.$vm.productCategories,
-            locations: this.$vm.locations,
-            suppliers: this.$vm.suppliers,
-            groupBy: this.$vm.rowGroupBy,
-        });
+        var rows = await this._fetchRowsData();
         this.$vm.rows = rows.sort((r1, r2) => r1.label > r2.label);
+    },
+    _fetchRowsData() {
+        const options = {
+            products: this.$vm.products.map(r => r.id),
+            categories: this.$vm.productCategories.map(r => r.id),
+            locations: this.$vm.locations.map(r => r.id),
+            suppliers: this.$vm.suppliers.map(r => r.id),
+            groupBy: this.$vm.rowGroupBy,
+        }
+        return this._rpc({
+            model: "vue.stock.forecast",
+            method: "fetch",
+            params: { context: odoo.session_info.user_context },
+            kwargs: { options },
+        })
     },
     /**
      * Handle the click on a stock quant amount (the column `Stock`).
@@ -148,14 +149,14 @@ var StockForecastReport = Widget.extend(ControlPanelMixin, {
     onCurrentStockClicked(row){
         var domain = [["location_id.usage", "=", "internal"]];
 
-        if(row.product){
-            domain.push(["product_id", "=", row.product.id]);
+        if(row.productId){
+            domain.push(["product_id", "=", row.productId]);
         }
-        if(row.category) {
-            domain.push(["product_id.categ_id", "child_of", row.category.id]);
+        if(row.categoryId) {
+            domain.push(["product_id.categ_id", "child_of", row.categoryId]);
         }
-        if(row.uom){
-            domain.push(["product_id.uom_id", "=", row.uom[0]]);
+        if(row.uomId){
+            domain.push(["product_id.uom_id", "=", row.uomId]);
         }
 
         domain = domain.concat(this.getStockQuantLocationDomain());
@@ -201,14 +202,14 @@ var StockForecastReport = Widget.extend(ControlPanelMixin, {
             ["date_expected", "<", dayAfterDateTo],
         ];
 
-        if(row.product){
-            domain.push(["product_id", "=", row.product.id]);
+        if(row.productId){
+            domain.push(["product_id", "=", row.productId]);
         }
-        if(row.category) {
-            domain.push(["product_id.categ_id", "child_of", row.category.id]);
+        if(row.categoryId) {
+            domain.push(["product_id.categ_id", "child_of", row.categoryId]);
         }
-        if(row.uom){
-            domain.push(["product_id.uom_id", "=", row.uom[0]]);
+        if(row.uomId){
+            domain.push(["product_id.uom_id", "=", row.uomId]);
         }
 
         domain.concat(this.getStockMoveLocationDomain());
