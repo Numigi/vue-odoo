@@ -54,12 +54,6 @@ msgstr "Emplacement"
 #. module: vue_stock_forecast
 #. openerp-web
 #: code:addons/vue_stock_forecast/static/dist/vueStockForecast.js:0
-msgid "Preferred Supplier"
-msgstr "Fournisseur préféré"
-
-#. module: vue_stock_forecast
-#. openerp-web
-#: code:addons/vue_stock_forecast/static/dist/vueStockForecast.js:0
 msgid "Product Categories"
 msgstr "Catégories d'articles"
 
@@ -134,5 +128,12 @@ msgstr "Mouvements d'inventaire (du {date_from} au {date_to})"
 #. module: vue_stock_forecast
 #. openerp-web
 #: code:addons/vue_stock_forecast/static/dist/vueStockForecast.js:0
+msgid "Supplier"
+msgstr "Fournisseur"
+
+#. module: vue_stock_forecast
+#. openerp-web
+#: code:addons/vue_stock_forecast/static/dist/vueStockForecast.js:0
+#, python-format
 msgid "Week"
 msgstr "Semaine"
