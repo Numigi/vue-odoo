@@ -7,7 +7,6 @@ var core = require("web.core");
 var Widget = require("web.Widget");
 var data = require("web.data");
 
-var fetchRowsData = require("vue_stock_forecast.fetchRowsData");
 var ReportComponent = Vue.extend(vueStockForecast.StockForecastReport);
 
 var _t = core._t;
@@ -22,6 +21,7 @@ var StockForecastReport = Widget.extend(ControlPanelMixin, {
                 searchProducts: (query) => this.searchProducts(query),
                 searchProductCategories: (query) => this.searchProductCategories(query),
                 searchStockLocations: (query) => this.searchStockLocations(query),
+                searchSuppliers: (query) => this.searchSuppliers(query),
 
                 // Function called when a filter changed
                 onFilterChange: () => this.onFilterChange(),
@@ -98,13 +98,20 @@ var StockForecastReport = Widget.extend(ControlPanelMixin, {
     searchStockLocations(query){
         return this._nameSearchQuery("stock.location", query, [["usage", "=", "internal"]]);
     },
+    /**
+     * Search stock suppliers by name.
+     *
+     * @param {String} query - the expression to search.
+     * @returns {Array[Object]} - the res.partner records found.
+     */
+    searchSuppliers(query){
+        return this._nameSearchQuery("res.partner", query, [["supplier", "=", true]]);
+    },
     _nameSearchQuery(model, query, domain, limit){
         return this._rpc({
             model,
             method: "name_search",
-            params: {
-                context: odoo.session_info.user_context,
-            },
+            params: { context: odoo.session_info.user_context },
             kwargs: {
                 name: query,
                 args: domain,
@@ -113,14 +120,23 @@ var StockForecastReport = Widget.extend(ControlPanelMixin, {
         });
     },
     async onFilterChange(products){
-        if(!this.$vm.products.length && !this.$vm.productCategories.length){
-            this.$vm.rows = [];
-            return;
-        }
-
-        var rows = await fetchRowsData(
-            this.$vm.products, this.$vm.productCategories, this.$vm.locations, this.$vm.rowGroupBy);
+        var rows = await this._fetchRowsData();
         this.$vm.rows = rows.sort((r1, r2) => r1.label > r2.label);
+    },
+    _fetchRowsData() {
+        const options = {
+            products: this.$vm.products.map(r => r.id),
+            categories: this.$vm.productCategories.map(r => r.id),
+            locations: this.$vm.locations.map(r => r.id),
+            suppliers: this.$vm.suppliers.map(r => r.id),
+            groupBy: this.$vm.rowGroupBy,
+        }
+        return this._rpc({
+            model: "vue.stock.forecast",
+            method: "fetch",
+            params: { context: odoo.session_info.user_context },
+            kwargs: { options },
+        })
     },
     /**
      * Handle the click on a stock quant amount (the column `Stock`).
@@ -133,14 +149,14 @@ var StockForecastReport = Widget.extend(ControlPanelMixin, {
     onCurrentStockClicked(row){
         var domain = [["location_id.usage", "=", "internal"]];
 
-        if(row.product){
-            domain.push(["product_id", "=", row.product.id]);
+        if(row.productId){
+            domain.push(["product_id", "=", row.productId]);
         }
-        if(row.category) {
-            domain.push(["product_id.categ_id", "child_of", row.category.id]);
+        if(row.categoryId) {
+            domain.push(["product_id.categ_id", "child_of", row.categoryId]);
         }
-        if(row.uom){
-            domain.push(["product_id.uom_id", "=", row.uom[0]]);
+        if(row.uomId){
+            domain.push(["product_id.uom_id", "=", row.uomId]);
         }
 
         domain = domain.concat(this.getStockQuantLocationDomain());
@@ -186,14 +202,14 @@ var StockForecastReport = Widget.extend(ControlPanelMixin, {
             ["date_expected", "<", dayAfterDateTo],
         ];
 
-        if(row.product){
-            domain.push(["product_id", "=", row.product.id]);
+        if(row.productId){
+            domain.push(["product_id", "=", row.productId]);
         }
-        if(row.category) {
-            domain.push(["product_id.categ_id", "child_of", row.category.id]);
+        if(row.categoryId) {
+            domain.push(["product_id.categ_id", "child_of", row.categoryId]);
         }
-        if(row.uom){
-            domain.push(["product_id.uom_id", "=", row.uom[0]]);
+        if(row.uomId){
+            domain.push(["product_id.uom_id", "=", row.uomId]);
         }
 
         domain.concat(this.getStockMoveLocationDomain());
