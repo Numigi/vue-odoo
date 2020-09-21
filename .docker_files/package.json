@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "@ava/babel-preset-stage-4": "^1.1.0",
-    "ava": "1.0.0-beta.5.1",
+    "ava": "^3.12.1",
     "browser-env": "^3.2.5",
     "element-ui": "^2.4.1",
     "moment": "^2.22.2",

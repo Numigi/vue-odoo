@@ -6,6 +6,9 @@
             <el-form-item :label="translate('Location')">
                 <many2many ref="locations" :search="searchStockLocations" @change="onLocationChange"></many2many>
             </el-form-item>
+            <el-form-item :label="translate('Supplier')">
+                <many2many ref="suppliers" :search="searchSuppliers" @change="onSupplierChange"></many2many>
+            </el-form-item>
         </el-form>
 
         <!-- Product / Category Options -->
@@ -75,12 +78,17 @@ export default {
             type: Function,
             required: true,
         },
+        searchSuppliers: {
+            type: Function,
+            required: true,
+        },
 
         // Function to call when a filter input (many2many field) was changed.
         onFilterChange: {
             type: Function,
             required: true,
         },
+
 
         // Injected function for translating the widget labels.
         translate: {
@@ -97,6 +105,7 @@ export default {
             locations: [],
             productCategories: [],
             products: [],
+            suppliers: [],
             rows: [],
         };
     },
@@ -143,6 +152,10 @@ export default {
         },
         onProductCategoryChange(value){
             this.productCategories = value;
+            this.onFilterChange();
+        },
+        onSupplierChange(value){
+            this.suppliers = value;
             this.onFilterChange();
         },
         onLocationChange(value){

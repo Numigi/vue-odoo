@@ -46,23 +46,6 @@
 
 <script>
 
-function getDateRange(dateFrom, dateTo, dateGroupBy){
-    var dateRange = [];
-    var currentMoment = moment(dateFrom);
-    var momentTo = moment(dateTo);
-
-    while(currentMoment < momentTo){
-        currentMoment.endOf(dateGroupBy);
-        dateRange.push({
-            key: currentMoment.format("YYYY-MM-DD"),
-            label: currentMoment.format("YYYY-MM-DD"),
-        });
-        currentMoment.add(1, dateGroupBy);
-    }
-
-    return dateRange;
-}
-
 export default {
     props: {
         dateFrom: {
@@ -106,7 +89,9 @@ export default {
     methods: {
         productHasMovesAtDate(row, dateTo){
             var dateFrom = moment(dateTo).subtract(1, this.dateGroupBy || "month").format("YYYY-MM-DD");
-            var movesAtDate = (move) => dateFrom < move.date && move.date <= dateTo;
+            function movesAtDate(move) {
+                return dateFrom < move.date && move.date <= dateTo
+            }
 
             return (
               row.incoming.filter(movesAtDate).length > 0 ||
@@ -123,7 +108,9 @@ export default {
 
             var dateFrom = moment(dateTo).subtract(1, this.dateGroupBy).format("YYYY-MM-DD");
 
-            var movesAtDate = (move) => dateFrom < move.date && move.date <= dateTo;
+            function movesAtDate(move) {
+                return dateFrom < move.date && move.date <= dateTo
+            }
             var incomingQtyAtDate = row.incoming.filter(movesAtDate).reduce(stockMoveSum, 0);
             var outgoingQtyAtDate = row.outgoing.filter(movesAtDate).reduce(stockMoveSum, 0);
 
@@ -158,5 +145,22 @@ export default {
         },
     },
 };
+
+function getDateRange(dateFrom, dateTo, dateGroupBy){
+    var dateRange = [];
+    var currentMoment = moment(dateFrom);
+    var momentTo = moment(dateTo);
+
+    while(currentMoment < momentTo){
+        currentMoment.endOf(dateGroupBy);
+        dateRange.push({
+            key: currentMoment.format("YYYY-MM-DD"),
+            label: currentMoment.format("YYYY-MM-DD"),
+        });
+        currentMoment.add(1, dateGroupBy);
+    }
+
+    return dateRange;
+}
 
 </script>
