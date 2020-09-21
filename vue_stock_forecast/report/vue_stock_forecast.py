@@ -4,7 +4,7 @@
 import pytz
 from datetime import datetime
 from odoo import api, models
-from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT, DEFAULT_SERVER_DATE_FORMAT
+from odoo.tools import DEFAULT_SERVER_DATE_FORMAT
 from odoo.osv.expression import OR
 
 
@@ -50,8 +50,7 @@ class VueStockForecast(models.AbstractModel):
 
         return result
 
-    def _format_date(self, naive_datetime_str):
-        naive_datetime = datetime.strptime(naive_datetime_str, DEFAULT_SERVER_DATETIME_FORMAT)
+    def _format_date(self, naive_datetime):
         utc_datetime = pytz.utc.localize(naive_datetime)
         tz = self._context.get("tz") or "UCT"
         tz_datetime = utc_datetime.astimezone(pytz.timezone(tz))
@@ -190,7 +189,7 @@ class VueStockForecast(models.AbstractModel):
         }
 
     def _get_category_row_label(self, category, uom):
-        units = self.env.ref("product.product_uom_unit")
+        units = self.env.ref("uom.product_uom_unit")
         if uom == units:
             return category.display_name
         else:

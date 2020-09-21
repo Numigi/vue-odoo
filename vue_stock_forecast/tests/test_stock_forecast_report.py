@@ -41,8 +41,8 @@ class TestResPartner(SavepointCase):
     def test_group_by_category_ids(self):
         category = self.env.ref("product.product_category_all")
         result = self.report.fetch({"categories": [category.id], "groupBy": "category"})
-        all_categories = self.env["product.category"].search([])
-        assert len(result) == len(all_categories)
+        result = sorted(result, key=lambda r: r["categoryId"])
+        assert result[0]["categoryId"] == category.id
 
     def test_supplier_with_no_product(self):
         result = self.report.fetch({"suppliers": [self.supplier.id]})
