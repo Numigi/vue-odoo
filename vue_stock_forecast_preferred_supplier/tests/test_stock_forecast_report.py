@@ -67,7 +67,7 @@ class TestProductProduct(SavepointCase):
         self._add_supplier(self.product_a1, self.supplier_a, 1)
         self._add_supplier(self.product_b, self.supplier_b, 1)
         self._add_supplier(self.product_b, self.supplier_a, 2)
-        products = self.env["stock.forecast.report"]._get_supplier_products(
+        products = self.env["vue.stock.forecast"]._get_supplier_products(
             [self.supplier_a.id],
         )
         assert products == self.product_a1
