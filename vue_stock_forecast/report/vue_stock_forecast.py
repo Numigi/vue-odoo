@@ -80,6 +80,10 @@ class VueStockForecast(models.AbstractModel):
         return products.filtered(lambda p: p.type in ("product", "consu"))
 
     def _get_supplier_domain(self, supplier_ids):
+        products = self._get_supplier_products(supplier_ids)
+        return [("id", "in", products.ids)]
+
+    def _get_supplier_products(self, supplier_ids):
         supplier_info = self.env["product.supplierinfo"].search([
             ("name.commercial_partner_id", "in", supplier_ids),
         ])
@@ -91,7 +95,7 @@ class VueStockForecast(models.AbstractModel):
             else:
                 products |= info.product_tmpl_id.product_variant_ids
 
-        return [("id", "in", products.ids)]
+        return products
 
     def _make_row_data(self, product):
         return {
