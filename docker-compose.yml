@@ -7,8 +7,6 @@ services:
     volumes:
       - odoo-web-data:/var/lib/odoo
       - ./.log:/var/log/odoo
-      - ./vue_stock_forecast:/mnt/extra-addons/vue_stock_forecast
-      - ./vue_stock_forecast_preferred_supplier:/mnt/extra-addons/vue_stock_forecast_preferred_supplier
     ports:
       - "8069:8069"
       - "8071:8071"
