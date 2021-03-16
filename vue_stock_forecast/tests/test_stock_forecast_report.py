@@ -31,6 +31,10 @@ class TestResPartner(SavepointCase):
         assert len(result) == 1
         assert result[0]["productId"] == self.product_a.id
 
+    def test_filter_by_location_id(self):
+        location = self.env["stock.location"].search([], limit=1)
+        self.report.fetch({"locations": [location.id]})
+
     def test_search_by_category_ids(self):
         category = self.env["product.category"].create({"name": "My Category"})
         self.product_b.categ_id = category.id
