@@ -22,10 +22,7 @@ class VueStockForecast(models.AbstractModel):
         else:
             rows = stock_data
 
-        return sorted(
-            list(rows.values()),
-            key=lambda r: r["label"],
-        )
+        return sorted(list(rows.values()), key=lambda r: r["label"],)
 
     def _get_stock_data(self, options):
         products = self._get_products(options)
@@ -84,9 +81,9 @@ class VueStockForecast(models.AbstractModel):
         return [("id", "in", products.ids)]
 
     def _get_supplier_products(self, supplier_ids):
-        supplier_info = self.env["product.supplierinfo"].search([
-            ("name.commercial_partner_id", "in", supplier_ids),
-        ])
+        supplier_info = self.env["product.supplierinfo"].search(
+            [("name.commercial_partner_id", "in", supplier_ids),]
+        )
         products = self.env["product.product"]
 
         for info in supplier_info:
@@ -117,9 +114,9 @@ class VueStockForecast(models.AbstractModel):
         ]
 
         if options.get("locations"):
-            domain.append([
+            domain.append(
                 ("location_dest_id", "child_of", options["locations"]),
-            ])
+            )
 
         return self.env["stock.move"].search(domain)
 
@@ -132,9 +129,9 @@ class VueStockForecast(models.AbstractModel):
         ]
 
         if options.get("locations"):
-            domain.append([
+            domain.append(
                 ("location_id", "child_of", options["locations"]),
-            ])
+            )
 
         return self.env["stock.move"].search(domain)
 
@@ -145,9 +142,9 @@ class VueStockForecast(models.AbstractModel):
         ]
 
         if options.get("locations"):
-            domain.append([
+            domain.append(
                 ("location_id", "child_of", options["locations"]),
-            ])
+            )
 
         return self.env["stock.quant"].search(domain)
 
@@ -175,10 +172,7 @@ class VueStockForecast(models.AbstractModel):
     def _get_products_from_category(self, category, stock_data):
         all_product_ids = [p.id for p in stock_data.keys()]
         return self.env["product.product"].search(
-            [
-                ("id", "in", all_product_ids),
-                ("categ_id", "child_of", category.id),
-            ]
+            [("id", "in", all_product_ids), ("categ_id", "child_of", category.id),]
         )
 
     def _make_empty_category_row(self, category, uom):
@@ -198,12 +192,9 @@ class VueStockForecast(models.AbstractModel):
             return category.display_name
         else:
             return "{category} ({uom})".format(
-                category=category.display_name,
-                uom=uom.display_name,
+                category=category.display_name, uom=uom.display_name,
             )
 
     def _get_all_categories(self, options):
         category_ids = options.get("categories") or []
-        return self.env["product.category"].search([
-            ("id", "child_of", category_ids),
-        ])
+        return self.env["product.category"].search([("id", "child_of", category_ids),])

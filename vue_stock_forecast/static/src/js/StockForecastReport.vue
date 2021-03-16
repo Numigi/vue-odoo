@@ -1,6 +1,6 @@
 <template>
 
-<div class="stock-forecast-report">
+<div class="stock-forecast-report" v-show="visible">
     <el-card class="stock-forecast-report__filters">
         <el-form :model="$data" label-width="150px" label-position="left" inline>
             <el-form-item :label="translate('Location')">
@@ -107,6 +107,7 @@ export default {
             products: [],
             suppliers: [],
             rows: [],
+            visible: true,
         };
     },
     computed: {

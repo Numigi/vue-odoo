@@ -12,6 +12,11 @@ var ReportComponent = Vue.extend(vueStockForecast.StockForecastReport);
 var _t = core._t;
 
 var StockForecastReport = AbstractAction.extend(ControlPanelMixin, {
+    init: function (parent, action) {
+        this._super.apply(this, arguments);
+        this.context = action.context || {};
+    },
+
     async start(){
         await this._super();
 
@@ -44,10 +49,9 @@ var StockForecastReport = AbstractAction.extend(ControlPanelMixin, {
      * Handle passing a default product id through the context.
      */
     async setDefaultProduct(){
-        var context = this.getContext();
-        if(context.product_id){
+        if(this.context.product_id){
             var query = new QueryBuilder("product.product", ["display_name"]);
-            query.filter([["id", "=", context.product_id]]);
+            query.filter([["id", "=", this.context.product_id]]);
             var products = (await query.searchRead()).map((p) => [p.id, p.display_name]);
             this.$vm.setProducts(products);
             this.onFilterChange();
@@ -57,19 +61,13 @@ var StockForecastReport = AbstractAction.extend(ControlPanelMixin, {
      * Handle passing a default product template id through the context.
      */
     async setDefaultProductTemplate(){
-        var context = this.getContext();
-        if(context.product_template_id){
+        if(this.context.product_template_id){
             var query = new QueryBuilder("product.product", ["display_name"]);
-            query.filter([["product_tmpl_id", "=", context.product_template_id]]);
+            query.filter([["product_tmpl_id", "=", this.context.product_template_id]]);
             var products = (await query.searchRead()).map((p) => [p.id, p.display_name]);
             this.$vm.setProducts(products);
             this.onFilterChange();
         }
-    },
-    getContext(){
-        var parent = this.getParent();
-        var parentIsAction = parent.get_inner_action;
-        return parentIsAction ? parent.get_inner_action().action_descr.context : {};
     },
     /**
      * Search products by name.
@@ -252,9 +250,18 @@ var StockForecastReport = AbstractAction.extend(ControlPanelMixin, {
         }
         return domain;
     },
+    do_action() {
+        const res = this._super.apply(this, arguments);
+        res.then(() => this.do_hide())
+        return res
+    },
     do_show(){
         this.$el.removeClass("o_hidden");
-        this.$el[0].appendChild(this.$vm.$el);
+        this.$vm.visible = true
+    },
+    do_hide(){
+        this.$el.addClass("o_hidden");
+        this.$vm.visible = false
     },
     destroy(){
         var parentNode = this.$vm.$el.parentNode;
