@@ -30,14 +30,14 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column v-for="dateGroup in dateGroups" :key="dateGroup.key" :label="dateGroup.label" width="150" align="center">
+      <el-table-column v-for="dateGroup in dateGroups" :key="dateGroup.key" :label="dateGroup.date" width="150" align="center">
         <template slot-scope="scope">
           <div class="stock-forecast-table__link"
-            @click="moveAmountClicked(scope.row, dateGroup.key)"
-            v-if="productHasMovesAtDate(scope.row, dateGroup.key)">
-            {{ getStockValue(scope.row, dateGroup.key) }}
+            @click="moveAmountClicked(scope.row, dateGroup.date)"
+            v-if="productHasMovesAtDate(scope.row, dateGroup.date)">
+            {{ getStockValue(scope.row, dateGroup.date) }}
           </div>
-          <div v-else>{{ getStockValue(scope.row, dateGroup.key) }}</div>
+          <div v-else>{{ getStockValue(scope.row, dateGroup.date) }}</div>
         </template>
       </el-table-column>
     </el-table>
@@ -146,6 +146,8 @@ export default {
     },
 };
 
+let nextGroupKey = 1
+
 function getDateRange(dateFrom, dateTo, dateGroupBy){
     var dateRange = [];
     var currentMoment = moment(dateFrom);
@@ -154,8 +156,8 @@ function getDateRange(dateFrom, dateTo, dateGroupBy){
     while(currentMoment < momentTo){
         currentMoment.endOf(dateGroupBy);
         dateRange.push({
-            key: currentMoment.format("YYYY-MM-DD"),
-            label: currentMoment.format("YYYY-MM-DD"),
+            key: nextGroupKey++,
+            date: currentMoment.format("YYYY-MM-DD"),
         });
         currentMoment.add(1, dateGroupBy);
     }
