@@ -32,7 +32,7 @@
       </el-table-column>
       <el-table-column v-for="dateGroup in dateGroups" :key="dateGroup.key" :label="dateGroup.date" width="150" align="center">
         <template slot-scope="scope">
-          <div class="stock-forecast-table__link"
+          <div class="stock-forecast-table__link stock-forecast-table__amount"
             @click="moveAmountClicked(scope.row, dateGroup.date)"
             v-if="productHasMovesAtDate(scope.row, dateGroup.date)">
             {{ getStockValue(scope.row, dateGroup.date) }}
@@ -115,26 +115,26 @@ export default {
             var outgoingQtyAtDate = row.outgoing.filter(movesAtDate).reduce(stockMoveSum, 0);
 
             if(incomingQtyAtDate && outgoingQtyAtDate){
-                return String(stockAtDate) + " (+" + String(incomingQtyAtDate) + " / " + "-" + String(outgoingQtyAtDate) + ")";
+                return round(stockAtDate) + " (+" + round(incomingQtyAtDate) + " / " + "-" + round(outgoingQtyAtDate) + ")";
             }
             else if(incomingQtyAtDate){
-                return String(stockAtDate) + " (+" + String(incomingQtyAtDate) + ")";
+                return round(stockAtDate) + " (+" + round(incomingQtyAtDate) + ")";
             }
             else if(outgoingQtyAtDate){
-                return String(stockAtDate) + " (-" + String(outgoingQtyAtDate) + ")";
+                return round(stockAtDate) + " (-" + round(outgoingQtyAtDate) + ")";
             }
             else {
-                return String(stockAtDate);
+                return round(stockAtDate);
             }
         },
         displayCurrentStock(row){
-            return row.currentStock;
+            return round(row.currentStock);
         },
         displayReservedStock(row){
-            return row.reserved;
+            return round(row.reserved);
         },
         displayAvailableStock(row){
-            return row.currentStock - row.reserved;
+            return round(row.currentStock - row.reserved);
         },
         currentStockClicked(row){
             this.$emit('current-stock-clicked', row);
@@ -163,6 +163,10 @@ function getDateRange(dateFrom, dateTo, dateGroupBy){
     }
 
     return dateRange;
+}
+
+function round(amount) {
+    return amount ? amount.toFixed(2).replace(" ", " ") : "0"
 }
 
 </script>

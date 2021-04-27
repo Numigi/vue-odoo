@@ -1,6 +1,6 @@
 .stock-forecast-report {
     margin: 8px;
-    max-width: 1651px;
+    max-width: 100vw;
 }
 
 .stock-forecast-report .el-select{
@@ -22,4 +22,8 @@
 
 .stock-forecast-report .el-form-item:not(:first-child){
     margin-left: 50px;
+}
+
+.stock-forecast-table__amount {
+	white-space: nowrap;
 }
