@@ -30,6 +30,20 @@
           </div>
         </template>
       </el-table-column>
+      <el-table-column :label="translate('Min / Max')" width="150" align="center">
+        <template slot-scope="scope">
+          <div class="stock-forecast-table__link" @click="minMaxClicked(scope.row)">
+            {{ displayMinMax(scope.row) }}
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column :label="translate('Quotation')" width="150" align="center">
+        <template slot-scope="scope">
+          <div>
+            {{ displayPurchaseQuotation(scope.row) }}
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column v-for="dateGroup in dateGroups" :key="dateGroup.key" :label="dateGroup.date" width="150" align="center">
         <template slot-scope="scope">
           <div class="stock-forecast-table__link stock-forecast-table__amount"
@@ -136,8 +150,19 @@ export default {
         displayAvailableStock(row){
             return round(row.currentStock - row.reserved);
         },
+        displayMinMax(row){
+            const min = row.min
+            const max = row.max
+            return (min || 0).toFixed() + " / " + (max || 0).toFixed()
+        },
+        displayPurchaseQuotation(row) {
+            return round(row.purchased);
+        },
         currentStockClicked(row){
             this.$emit('current-stock-clicked', row);
+        },
+        minMaxClicked(row){
+            this.$emit('min-max-clicked', row);
         },
         moveAmountClicked(row, dateTo){
             var dateFrom = moment(dateTo).subtract(1, this.dateGroupBy).add(1, "day").format("YYYY-MM-DD");

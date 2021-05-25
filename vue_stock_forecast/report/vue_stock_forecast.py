@@ -22,30 +22,51 @@ class VueStockForecast(models.AbstractModel):
         else:
             rows = stock_data
 
-        return sorted(list(rows.values()), key=lambda r: r["label"],)
+        return sorted(
+            list(rows.values()),
+            key=lambda r: r["label"],
+        )
 
     def _get_stock_data(self, options):
         products = self._get_products(options)
-        result = {p: self._make_row_data(p) for p in products}
+        data = self._get_data(products, options)
+        return {p: self._make_row_data(p, data) for p in products}
 
-        incoming = self._get_incoming_stock_moves(products, options)
-        for move in incoming:
-            result[move.product_id]["incoming"].append(
-                {"qty": move.product_qty, "date": self._format_date(move.date_expected)}
-            )
+    def _get_data(self, products, options):
+        return {
+            "incoming_moves": self._get_incoming_stock_moves(products, options),
+            "outgoing_moves": self._get_outgoing_stock_moves(products, options),
+            "quants": self._get_stock_quants(products, options),
+            "orderpoints": self._get_orderpoints(products, options),
+            "purchase_lines": self._get_purchase_lines(products, options),
+        }
 
-        outgoing = self._get_outgoing_stock_moves(products, options)
-        for move in outgoing:
-            result[move.product_id]["outgoing"].append(
-                {"qty": move.product_qty, "date": self._format_date(move.date_expected)}
-            )
+    def _make_row_data(self, product, data):
+        in_moves = data["incoming_moves"].filtered(lambda m: m.product_id == product)
+        out_moves = data["outgoing_moves"].filtered(lambda m: m.product_id == product)
+        quants = data["quants"].filtered(lambda q: q.product_id == product)
+        orderpoints = data["orderpoints"].filtered(lambda o: o.product_id == product)
+        return {
+            "label": product.display_name,
+            "productId": product.id,
+            "uom": product.uom_id,
+            "currentStock": sum(q.quantity for q in quants),
+            "reserved": sum(q.reserved_quantity for q in quants),
+            "incoming": [self._format_stock_move(m) for m in in_moves],
+            "outgoing": [self._format_stock_move(m) for m in out_moves],
+            "min": sum(orderpoints.mapped("product_min_qty")),
+            "max": sum(orderpoints.mapped("product_max_qty")),
+            "purchased": self._get_product_purchased_quantity(product, data),
+        }
 
-        quants = self._get_stock_quants(products, options)
-        for quant in quants:
-            result[quant.product_id]["currentStock"] += quant.quantity
-            result[quant.product_id]["reserved"] += quant.reserved_quantity
+    def _get_product_purchased_quantity(self, product, data):
+        purchase_lines = data["purchase_lines"].filtered(lambda o: o.product_id == product)
+        return sum(
+            l.product_uom._compute_quantity(l.product_qty, product.uom_id) for l in purchase_lines
+        )
 
-        return result
+    def _format_stock_move(self, move):
+        return {"qty": move.product_qty, "date": self._format_date(move.date_expected)}
 
     def _format_date(self, naive_datetime):
         utc_datetime = pytz.utc.localize(naive_datetime)
@@ -82,7 +103,9 @@ class VueStockForecast(models.AbstractModel):
 
     def _get_supplier_products(self, supplier_ids):
         supplier_info = self.env["product.supplierinfo"].search(
-            [("name.commercial_partner_id", "in", supplier_ids),]
+            [
+                ("name.commercial_partner_id", "in", supplier_ids),
+            ]
         )
         products = self.env["product.product"]
 
@@ -93,17 +116,6 @@ class VueStockForecast(models.AbstractModel):
                 products |= info.product_tmpl_id.product_variant_ids
 
         return products
-
-    def _make_row_data(self, product):
-        return {
-            "label": product.display_name,
-            "productId": product.id,
-            "uom": product.uom_id,
-            "currentStock": 0,
-            "reserved": 0,
-            "incoming": [],
-            "outgoing": [],
-        }
 
     def _get_incoming_stock_moves(self, products, options):
         domain = [
@@ -148,6 +160,24 @@ class VueStockForecast(models.AbstractModel):
 
         return self.env["stock.quant"].search(domain)
 
+    def _get_orderpoints(self, products, options):
+        domain = [
+            ("product_id", "in", products.ids),
+        ]
+
+        if options.get("locations"):
+            domain.append(
+                ("location_id", "child_of", options["locations"]),
+            )
+
+        return self.env["stock.warehouse.orderpoint"].search(domain)
+
+    def _get_purchase_lines(self, products, options):
+        domain = [
+            ("product_id", "in", products.ids),
+        ]
+        return self.env["purchase.order.line"].search(domain)
+
     def _make_product_category_rows(self, stock_data, options):
         rows = {}
         all_categories = self._get_all_categories(options)
@@ -166,13 +196,19 @@ class VueStockForecast(models.AbstractModel):
                 row["reserved"] += product_data["reserved"]
                 row["incoming"].extend(product_data["incoming"])
                 row["outgoing"].extend(product_data["outgoing"])
+                row["min"] += product_data["min"]
+                row["max"] += product_data["max"]
+                row["purchased"] += product_data["purchased"]
 
         return rows
 
     def _get_products_from_category(self, category, stock_data):
         all_product_ids = [p.id for p in stock_data.keys()]
         return self.env["product.product"].search(
-            [("id", "in", all_product_ids), ("categ_id", "child_of", category.id),]
+            [
+                ("id", "in", all_product_ids),
+                ("categ_id", "child_of", category.id),
+            ]
         )
 
     def _make_empty_category_row(self, category, uom):
@@ -184,6 +220,9 @@ class VueStockForecast(models.AbstractModel):
             "reserved": 0,
             "incoming": [],
             "outgoing": [],
+            "min": 0,
+            "max": 0,
+            "purchased": 0,
         }
 
     def _get_category_row_label(self, category, uom):
@@ -192,9 +231,14 @@ class VueStockForecast(models.AbstractModel):
             return category.display_name
         else:
             return "{category} ({uom})".format(
-                category=category.display_name, uom=uom.display_name,
+                category=category.display_name,
+                uom=uom.display_name,
             )
 
     def _get_all_categories(self, options):
         category_ids = options.get("categories") or []
-        return self.env["product.category"].search([("id", "child_of", category_ids),])
+        return self.env["product.category"].search(
+            [
+                ("id", "child_of", category_ids),
+            ]
+        )

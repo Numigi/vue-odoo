@@ -36,6 +36,7 @@ var StockForecastReport = AbstractAction.extend(ControlPanelMixin, {
         }).$mount(this.$el[0]);
 
         this.$vm.$on("current-stock-clicked", (row) => this.onCurrentStockClicked(row));
+        this.$vm.$on("min-max-clicked", (row) => this.onMinMaxClicked(row));
         this.$vm.$on(
             "move-amount-clicked",
             (row, dateFrom, dateTo) => this.onMoveAmountClicked(row, dateFrom, dateTo)
@@ -162,6 +163,37 @@ var StockForecastReport = AbstractAction.extend(ControlPanelMixin, {
         this.do_action({
             res_model: "stock.quant",
             name: _t("Current Stocks"),
+            views: [[false, "list"], [false, "form"]],
+            type: "ir.actions.act_window",
+            domain,
+        });
+    },
+    /**
+     * Handle the click on a Min / Max quantity.
+     *
+     * An action is triggered to redirect the user to the list of stock quants that
+     * compose the amount clicked.
+     *
+     * @param {Object} row - the data of the row on which the user clicked.
+     */
+    onMinMaxClicked(row) {
+        var domain = [];
+
+        if(row.productId){
+            domain.push(["product_id", "=", row.productId]);
+        }
+
+        if(row.categoryId) {
+            domain.push(["product_id.categ_id", "child_of", row.categoryId]);
+        }
+
+        if(row.uomId){
+            domain.push(["product_id.uom_id", "=", row.uomId]);
+        }
+
+        this.do_action({
+            res_model: "stock.warehouse.orderpoint",
+            name: _t("{}: Min / Max").replace("{}", row.label),
             views: [[false, "list"], [false, "form"]],
             type: "ir.actions.act_window",
             domain,

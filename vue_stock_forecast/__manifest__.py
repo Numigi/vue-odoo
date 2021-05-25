@@ -10,6 +10,6 @@
     "license": "LGPL-3",
     "category": "Stock",
     "summary": "A dynamic stock forecast report using Vuejs.",
-    "depends": ["vue_backend", "vue_element_ui", "stock"],
+    "depends": ["vue_backend", "vue_element_ui", "purchase_stock"],
     "data": ["views/assets.xml", "views/menu.xml", "views/product.xml",],
 }
