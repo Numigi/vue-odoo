@@ -39,8 +39,8 @@
       </el-table-column>
       <el-table-column :label="translate('Quotation')" width="150" align="center">
         <template slot-scope="scope">
-          <div>
-            {{ displayPurchaseQuotation(scope.row) }}
+          <div class="stock-forecast-table__link" @click="purchasedClicked(scope.row)">
+            {{ displayPurchased(scope.row) }}
           </div>
         </template>
       </el-table-column>
@@ -155,7 +155,7 @@ export default {
             const max = row.max
             return (min || 0).toFixed() + " / " + (max || 0).toFixed()
         },
-        displayPurchaseQuotation(row) {
+        displayPurchased(row) {
             return round(row.purchased);
         },
         currentStockClicked(row){
@@ -163,6 +163,9 @@ export default {
         },
         minMaxClicked(row){
             this.$emit('min-max-clicked', row);
+        },
+        purchasedClicked(row) {
+            this.$emit('purchased-clicked', row);
         },
         moveAmountClicked(row, dateTo){
             var dateFrom = moment(dateTo).subtract(1, this.dateGroupBy).add(1, "day").format("YYYY-MM-DD");

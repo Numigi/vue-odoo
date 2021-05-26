@@ -37,6 +37,7 @@ var StockForecastReport = AbstractAction.extend(ControlPanelMixin, {
 
         this.$vm.$on("current-stock-clicked", (row) => this.onCurrentStockClicked(row));
         this.$vm.$on("min-max-clicked", (row) => this.onMinMaxClicked(row));
+        this.$vm.$on("purchased-clicked", (row) => this.onPurchasedClicked(row));
         this.$vm.$on(
             "move-amount-clicked",
             (row, dateFrom, dateTo) => this.onMoveAmountClicked(row, dateFrom, dateTo)
@@ -137,14 +138,6 @@ var StockForecastReport = AbstractAction.extend(ControlPanelMixin, {
             kwargs: { options },
         })
     },
-    /**
-     * Handle the click on a stock quant amount (the column `Stock`).
-     *
-     * An action is triggered to redirect the user to the list of stock quants that
-     * compose the amount clicked.
-     *
-     * @param {Object} row - the data of the row on which the user clicked.
-     */
     onCurrentStockClicked(row){
         var domain = [["location_id.usage", "=", "internal"]];
 
@@ -168,15 +161,17 @@ var StockForecastReport = AbstractAction.extend(ControlPanelMixin, {
             domain,
         });
     },
-    /**
-     * Handle the click on a Min / Max quantity.
-     *
-     * An action is triggered to redirect the user to the list of stock quants that
-     * compose the amount clicked.
-     *
-     * @param {Object} row - the data of the row on which the user clicked.
-     */
     onMinMaxClicked(row) {
+        this.do_action({
+            res_model: "stock.warehouse.orderpoint",
+            name: _t("{}: Min / Max").replace("{}", row.label),
+            views: [[false, "list"], [false, "form"]],
+            type: "ir.actions.act_window",
+            domain: this.getOrderpointDomain(row),
+            context: this.getOrderpointContext(row),
+        });
+    },
+    getOrderpointDomain(row) {
         var domain = [];
 
         if(row.productId){
@@ -191,19 +186,55 @@ var StockForecastReport = AbstractAction.extend(ControlPanelMixin, {
             domain.push(["product_id.uom_id", "=", row.uomId]);
         }
 
+        return domain
+    },
+    getOrderpointContext(row) {
+        const context = this.getUserContext()
+
+        if(row.productId){
+            context.default_product_id = row.productId
+        }
+
+        return context
+    },
+    onPurchasedClicked(row) {
         this.do_action({
-            res_model: "stock.warehouse.orderpoint",
-            name: _t("{}: Min / Max").replace("{}", row.label),
+            res_model: "purchase.order.line",
+            name: _t("{}: Quotation").replace("{}", row.label),
             views: [[false, "list"], [false, "form"]],
             type: "ir.actions.act_window",
-            domain,
+            domain: this.getPurchaseOrderLineDomain(row),
+            context: this.getPurchaseOrderLineContext(row),
         });
     },
-    /**
-     * Get the domain related to locations used for filtering stock quants.
-     *
-     * @returns {Array} the domain filter.
-     */
+    getPurchaseOrderLineDomain(row) {
+        var domain = [
+            ["order_id.state", "in", ["draft", "sent", "to approve"]],
+        ];
+
+        if(row.productId){
+            domain.push(["product_id", "=", row.productId]);
+        }
+
+        if(row.categoryId) {
+            domain.push(["product_id.categ_id", "child_of", row.categoryId]);
+        }
+
+        if(row.uomId){
+            domain.push(["product_id.uom_id", "=", row.uomId]);
+        }
+
+        return domain
+    },
+    getPurchaseOrderLineContext(row) {
+        const context = this.getUserContext()
+
+        if(row.productId){
+            context.default_product_id = row.productId
+        }
+
+        return context
+    },
     getStockQuantLocationDomain(){
         var domain = [];
         var locationIds = this.$vm.locations.map((l) => l.id);
@@ -212,18 +243,6 @@ var StockForecastReport = AbstractAction.extend(ControlPanelMixin, {
         }
         return domain;
     },
-    /**
-     * Handle the click on a stock move amount.
-     *
-     * An action is triggered to redirect the user to the list of stock moves
-     * that compose the amount clicked.
-     *
-     * The given dateFrom and dateTo represent the date interval of the amount clicked.
-     *
-     * @param {Object} row - the data of the row on which the user clicked.
-     * @param {String} dateFrom - the min date
-     * @param {String} dateTo - the max date
-     */
     onMoveAmountClicked(row, dateFrom, dateTo){
         var dayAfterDateTo = moment(dateTo).add(1, "day").format("YYYY-MM-DD");
         var domain = [
@@ -281,6 +300,9 @@ var StockForecastReport = AbstractAction.extend(ControlPanelMixin, {
             domain.push(["location_dest_id.usage", "=", "internal"]);
         }
         return domain;
+    },
+    getUserContext() {
+        return {...odoo.session_info.user_context}
     },
     do_action() {
         const res = this._super.apply(this, arguments);

@@ -55,6 +55,8 @@
         :rows="rows"
         :translate="translate"
         @current-stock-clicked="(row) => $emit('current-stock-clicked', row)"
+        @min-max-clicked="(row) => $emit('min-max-clicked', row)"
+        @purchased-clicked="(row) => $emit('purchased-clicked', row)"
         @move-amount-clicked="(row, dateFrom, dateTo) => $emit('move-amount-clicked', row, dateFrom, dateTo)"
         />
 </div>
