@@ -175,6 +175,7 @@ class VueStockForecast(models.AbstractModel):
     def _get_purchase_lines(self, products, options):
         domain = [
             ("product_id", "in", products.ids),
+            ("state", "in", ("draft", "sent", "to approve")),
         ]
         return self.env["purchase.order.line"].search(domain)
 

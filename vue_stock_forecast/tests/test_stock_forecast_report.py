@@ -249,3 +249,18 @@ class TestPurchasedQuantity(ForecastReportCase):
             result[0]["purchased"]
             == self.purchased_qty_a + self.purchased_qty_b
         )
+
+    def test_confirmed_order_excluded(self):
+        self.order.button_confirm()
+        result = self.report.fetch({"products": [self.product_a.id]})
+        assert result[0]["purchased"] == 0
+
+    def test_confirmed_order_sent(self):
+        self.order.state = "sent"
+        result = self.report.fetch({"products": [self.product_a.id]})
+        assert result[0]["purchased"] == self.purchased_qty_a
+
+    def test_confirmed_order_to_approve(self):
+        self.order.state = "to approve"
+        result = self.report.fetch({"products": [self.product_a.id]})
+        assert result[0]["purchased"] == self.purchased_qty_a
