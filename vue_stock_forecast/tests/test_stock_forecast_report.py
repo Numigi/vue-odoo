@@ -1,6 +1,7 @@
 # © 2020 - today Numigi (tm) and all its contributors (https://bit.ly/numigiens)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
+from ddt import ddt, data
 from datetime import datetime
 from odoo.tests.common import SavepointCase
 
@@ -199,6 +200,7 @@ class TestStockForecastReport(ForecastReportCase):
         )
 
 
+@ddt
 class TestStockMove(ForecastReportCase):
     @classmethod
     def setUpClass(cls):
@@ -239,6 +241,12 @@ class TestStockMove(ForecastReportCase):
         incoming = result[0]["incoming"]
         assert len(incoming) == 1
 
+    @data("done", "cancel")
+    def test_incoming__state_excluded(self, state):
+        self.move.state = state
+        result = self.report.fetch({"products": [self.product_a.id], "locations": [self.location_1.id]})
+        assert not result[0]["incoming"]
+
     def test_outgoing(self):
         self.move.location_id = self.location_1
         self.move.location_dest_id = self.customer_location
@@ -268,10 +276,56 @@ class TestStockMove(ForecastReportCase):
         outgoing = result[0]["outgoing"]
         assert len(outgoing) == 1
 
+    @data("done", "cancel")
+    def test_outgoing__state_excluded(self, state):
+        self.move.location_id = self.location_1
+        self.move.location_dest_id = self.customer_location
+        self.move.state = state
+        result = self.report.fetch({"products": [self.product_a.id], "locations": [self.location_1.id]})
+        assert not result[0]["outgoing"]
+
     def test_date_in_specific_timezone(self):
         result = self.report.with_context(tz="EST").fetch({"products": [self.product_a.id]})
         incoming = result[0]["incoming"]
         assert incoming[0]["date"] == "2020-01-14"
+
+
+class TestStockQuant(ForecastReportCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.quant = cls.env["stock.quant"].create(
+            {
+                "location_id": cls.location_1.id,
+                "product_id": cls.product_a.id,
+                "quantity": 1,
+            }
+        )
+
+    def test_basic_case(self):
+        result = self.report.fetch({"products": [self.product_a.id]})
+        assert result[0]["currentStock"] == 1
+
+    def test_location_not_matching(self):
+        result = self.report.fetch({"products": [self.product_a.id], "locations": [self.location_2.id]})
+        assert result[0]["currentStock"] == 0
+
+    def test_location_matching(self):
+        result = self.report.fetch({"products": [self.product_a.id], "locations": [self.location_1.id]})
+        assert result[0]["currentStock"] == 1
+
+    def test_group_by_category(self):
+        result = self.report.fetch({"categories": [self.category.id], "groupBy": "category"})
+        assert result[0]["currentStock"] == 1
+
+    def test_no_reserved_quantity(self):
+        result = self.report.fetch({"products": [self.product_a.id]})
+        assert result[0]["reserved"] == 0
+
+    def test_reserved_quantity(self):
+        self.quant.reserved_quantity = 1
+        result = self.report.fetch({"products": [self.product_a.id]})
+        assert result[0]["reserved"] == 1
 
 
 class TestPurchasedQuantity(ForecastReportCase):
