@@ -1,128 +1,161 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* disable_quick_create
+# 	* disable_quick_create
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 10.0+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-10 00:06+0000\n"
-"PO-Revision-Date: 2017-12-10 00:06+0000\n"
+"POT-Creation-Date: 2021-06-01 15:28+0000\n"
+"PO-Revision-Date: 2021-06-01 11:29-0400\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: \n"
+"X-Generator: Poedit 2.3\n"
 
 #. module: vue_stock_forecast
 #. openerp-web
-#: code:addons/vue_stock_forecast/static/dist/vueStockForecast.js:0
+#: code:addons/vue_stock_forecast/static/src/js/StockForecastReport.js:344
 #, python-format
-msgid "Columns"
+msgid "Available "
+msgstr "Disponible"
+
+#. module: vue_stock_forecast
+#. openerp-web
+#: code:addons/vue_stock_forecast/static/src/js/StockForecastReport.js:345
+#, python-format
+msgid "Columns "
 msgstr "Colonnes"
 
 #. module: vue_stock_forecast
 #. openerp-web
-#: code:addons/vue_stock_forecast/static/dist/vueStockForecast.js:0
+#: code:addons/vue_stock_forecast/static/src/js/StockForecastReport.js:158
 #, python-format
 msgid "Current Stocks"
 msgstr "Stocks en cours"
 
 #. module: vue_stock_forecast
 #. openerp-web
-#: code:addons/vue_stock_forecast/static/dist/vueStockForecast.js:0
+#: code:addons/vue_stock_forecast/static/src/js/StockForecastReport.js:346
 #, python-format
-msgid "End Date"
+msgid "Day "
+msgstr "Jour"
+
+#. module: vue_stock_forecast
+#: model:ir.model.fields,field_description:vue_stock_forecast.field_vue_stock_forecast__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: vue_stock_forecast
+#. openerp-web
+#: code:addons/vue_stock_forecast/static/src/js/StockForecastReport.js:347
+#, python-format
+msgid "End Date "
 msgstr "Date de fin"
 
-#. module: stock
-#: model:ir.ui.view,arch_db:stock.product_form_view_procurement_button
-#: model:ir.ui.view,arch_db:stock.product_template_form_view_procurement_button
-msgid "<span class=\"o_stat_text\">Forecasted</span>"
-msgstr "<span class=\"o_stat_text\">Prévisions</span>"
+#. module: vue_stock_forecast
+#: model:ir.model.fields,field_description:vue_stock_forecast.field_vue_stock_forecast__id
+msgid "ID"
+msgstr ""
+
+#. module: vue_stock_forecast
+#: model:ir.model.fields,field_description:vue_stock_forecast.field_vue_stock_forecast____last_update
+msgid "Last Modified on"
+msgstr ""
 
 #. module: vue_stock_forecast
 #. openerp-web
-#: code:addons/vue_stock_forecast/static/dist/vueStockForecast.js:0
+#: code:addons/vue_stock_forecast/static/src/js/StockForecastReport.js:348
 #, python-format
-msgid "Available"
-msgstr "Disponible"
-
-#. module: vue_stock_forecast
-#. openerp-web
-#: code:addons/vue_stock_forecast/static/dist/vueStockForecast.js:0
-#, python-format
-msgid "Location"
+msgid "Location "
 msgstr "Emplacement"
 
 #. module: vue_stock_forecast
 #. openerp-web
-#: code:addons/vue_stock_forecast/static/dist/vueStockForecast.js:0
-msgid "Product Categories"
-msgstr "Catégories d'articles"
+#: code:addons/vue_stock_forecast/static/src/js/StockForecastReport.js:349
+#, python-format
+msgid "Min / Max "
+msgstr "Min / Max"
 
 #. module: vue_stock_forecast
 #. openerp-web
-#: code:addons/vue_stock_forecast/static/dist/vueStockForecast.js:0
+#: code:addons/vue_stock_forecast/static/src/js/StockForecastReport.js:350
 #, python-format
-msgid "Product Category"
-msgstr "Catégorie d'article"
-
-#. module: vue_stock_forecast
-#. openerp-web
-#: code:addons/vue_stock_forecast/static/dist/vueStockForecast.js:0
-#, python-format
-msgid "Product"
-msgstr "Article"
-
-#. module: vue_stock_forecast
-#. openerp-web
-#: code:addons/vue_stock_forecast/static/dist/vueStockForecast.js:0
-#, python-format
-msgid "Products"
-msgstr "Articles"
-
-#. module: vue_stock_forecast
-#. openerp-web
-#: code:addons/vue_stock_forecast/static/dist/vueStockForecast.js:0
-#, python-format
-msgid "Rows"
-msgstr "Lignes"
-
-#. module: vue_stock_forecast
-#. openerp-web
-#: code:addons/vue_stock_forecast/static/dist/vueStockForecast.js:0
-#, python-format
-msgid "Day"
-msgstr "Jour"
-
-#. module: vue_stock_forecast
-#. openerp-web
-#: code:addons/vue_stock_forecast/static/dist/vueStockForecast.js:0
-#, python-format
-msgid "Month"
+msgid "Month "
 msgstr "Mois"
 
 #. module: vue_stock_forecast
 #. openerp-web
-#: code:addons/vue_stock_forecast/static/dist/vueStockForecast.js:0
+#: code:addons/vue_stock_forecast/static/src/js/StockForecastReport.js:353
 #, python-format
-msgid "Reserved"
+msgid "Product "
+msgstr "Article"
+
+#. module: vue_stock_forecast
+#. openerp-web
+#: code:addons/vue_stock_forecast/static/src/js/StockForecastReport.js:351
+#, python-format
+msgid "Product Categories "
+msgstr "Catégories d'articles"
+
+#. module: vue_stock_forecast
+#. openerp-web
+#: code:addons/vue_stock_forecast/static/src/js/StockForecastReport.js:352
+#, python-format
+msgid "Product Category "
+msgstr "Catégorie d'article"
+
+#. module: vue_stock_forecast
+#. openerp-web
+#: code:addons/vue_stock_forecast/static/src/js/StockForecastReport.js:354
+#, python-format
+msgid "Products "
+msgstr "Articles"
+
+#. module: vue_stock_forecast
+#. openerp-web
+#: code:addons/vue_stock_forecast/static/src/js/StockForecastReport.js:355
+#, python-format
+msgid "Quotation "
+msgstr "Demande de prix"
+
+#. module: vue_stock_forecast
+#. openerp-web
+#: code:addons/vue_stock_forecast/static/src/js/StockForecastReport.js:356
+#, python-format
+msgid "Reserved "
 msgstr "Réservé"
 
 #. module: vue_stock_forecast
 #. openerp-web
-#: code:addons/vue_stock_forecast/static/dist/vueStockForecast.js:0
+#: code:addons/vue_stock_forecast/static/src/js/StockForecastReport.js:357
 #, python-format
-msgid "Start Date"
+msgid "Rows "
+msgstr "Lignes"
+
+#. module: vue_stock_forecast
+#. openerp-web
+#: code:addons/vue_stock_forecast/static/src/js/StockForecastReport.js:358
+#, python-format
+msgid "Search "
+msgstr "Rechercher"
+
+#. module: vue_stock_forecast
+#. openerp-web
+#: code:addons/vue_stock_forecast/static/src/js/StockForecastReport.js:358
+#, python-format
+msgid "Start Date "
 msgstr "Date de début"
 
 #. module: vue_stock_forecast
 #. openerp-web
-#: code:addons/vue_stock_forecast/static/dist/vueStockForecast.js:0
+#: code:addons/vue_stock_forecast/static/src/js/StockForecastReport.js:359
 #, python-format
-msgid "Stock"
+msgid "Stock "
 msgstr "Stock"
 
 #. module: vue_stock_forecast
@@ -135,20 +168,40 @@ msgstr "Prévision d'inventaire"
 
 #. module: vue_stock_forecast
 #. openerp-web
-#: code:addons/vue_stock_forecast/static/dist/vueStockForecast.js:0
+#: code:addons/vue_stock_forecast/static/src/js/StockForecastReport.js:267
 #, python-format
 msgid "Stock Moves ({date_from} to {date_to})"
 msgstr "Mouvements d'inventaire (du {date_from} au {date_to})"
 
 #. module: vue_stock_forecast
 #. openerp-web
-#: code:addons/vue_stock_forecast/static/dist/vueStockForecast.js:0
-msgid "Supplier"
+#: code:addons/vue_stock_forecast/static/src/js/StockForecastReport.js:360
+#, python-format
+msgid "Supplier "
 msgstr "Fournisseur"
 
 #. module: vue_stock_forecast
+#: model:ir.model,name:vue_stock_forecast.model_vue_stock_forecast
+msgid "Vue Stock Forecast "
+msgstr "Prévision d'inventaire"
+
+#. module: vue_stock_forecast
 #. openerp-web
-#: code:addons/vue_stock_forecast/static/dist/vueStockForecast.js:0
+#: code:addons/vue_stock_forecast/static/src/js/StockForecastReport.js:361
 #, python-format
-msgid "Week"
+msgid "Week "
 msgstr "Semaine"
+
+#. module: vue_stock_forecast
+#. openerp-web
+#: code:addons/vue_stock_forecast/static/src/js/StockForecastReport.js:167
+#, python-format
+msgid "{}: Min / Max"
+msgstr "{} : Min / Max"
+
+#. module: vue_stock_forecast
+#. openerp-web
+#: code:addons/vue_stock_forecast/static/src/js/StockForecastReport.js:203
+#, python-format
+msgid "{}: Quotation"
+msgstr "{} : Demande de prix"

@@ -3,13 +3,13 @@
 
 {
     "name": "Vue Stock Forecast",
-    "version": "1.1.1",
+    "version": "1.2.0",
     "author": "Numigi",
     "maintainer": "Numigi",
     "website": "https://bit.ly/numigi-com",
     "license": "LGPL-3",
     "category": "Stock",
     "summary": "A dynamic stock forecast report using Vuejs.",
-    "depends": ["vue_backend", "vue_element_ui", "stock"],
+    "depends": ["vue_backend", "vue_element_ui", "purchase_stock"],
     "data": ["views/assets.xml", "views/menu.xml", "views/product.xml",],
 }

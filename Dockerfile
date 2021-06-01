@@ -1,6 +1,13 @@
 FROM quay.io/numigi/odoo-public:12.latest
 MAINTAINER numigi <contact@numigi.com>
 
+USER root
+
+COPY .docker_files/test-requirements.txt ./test-requirements.txt
+RUN pip3 install -r ./test-requirements.txt && rm ./test-requirements.txt
+
+USER odoo
+
 COPY vue /mnt/extra-addons/vue
 COPY vue_backend /mnt/extra-addons/vue_backend
 COPY vue_element_ui /mnt/extra-addons/vue_element_ui
