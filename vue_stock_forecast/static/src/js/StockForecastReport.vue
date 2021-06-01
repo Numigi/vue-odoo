@@ -47,12 +47,19 @@
             </el-form-item>
         </el-form>
     </el-card>
+    <el-card>
+        <el-form :model="$data" label-width="150px" label-position="left" inline>
+            <el-form-item :label="translate('Search')" style="margin: 0;">
+                <el-input class="inline-input" v-model="autocompleteValue" style="width: 400px;"></el-input>
+            </el-form-item>
+        </el-form>
+    </el-card>
     <stock-forecast-table
         :dateFrom="effectiveDateFrom"
         :dateTo="effectiveDateTo"
         :dateGroupBy="dateGroupBy"
         :rowGroupBy="rowGroupBy"
-        :rows="rows"
+        :rows="filteredRows"
         :translate="translate"
         @current-stock-clicked="(row) => $emit('current-stock-clicked', row)"
         @min-max-clicked="(row) => $emit('min-max-clicked', row)"
@@ -110,6 +117,7 @@ export default {
             suppliers: [],
             rows: [],
             visible: true,
+            autocompleteValue: "",
         };
     },
     computed: {
@@ -131,6 +139,12 @@ export default {
                 {value: "product", label: this.translate("Product")},
                 {value: "category", label: this.translate("Product Category")},
             ];
+        },
+        filteredRows() {
+            const stringToMatch = (this.autocompleteValue || "").toLowerCase()
+            return this.rows.filter(
+                (r) => r.label.toLowerCase().indexOf(stringToMatch) !== -1
+            )
         },
     },
     methods: {

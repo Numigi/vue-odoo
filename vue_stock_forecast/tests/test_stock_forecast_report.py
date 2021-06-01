@@ -38,6 +38,9 @@ class ForecastReportCase(SavepointCase):
 
         cls.parent_location = cls.warehouse.lot_stock_id
 
+        cls.supplier_location = cls.env.ref("stock.stock_location_suppliers")
+        cls.customer_location = cls.env.ref("stock.stock_location_customers")
+
         cls.location_1 = cls.env["stock.location"].create(
             {
                 "name": "Location 1",
@@ -194,6 +197,81 @@ class TestStockForecastReport(ForecastReportCase):
                 ]
             }
         )
+
+
+class TestStockMove(ForecastReportCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.date_expected = datetime(2020, 1, 15)
+        cls.move = cls.env["stock.move"].create(
+            {
+                "location_id": cls.supplier_location.id,
+                "location_dest_id": cls.location_1.id,
+                "name": cls.product_a.display_name,
+                "product_id": cls.product_a.id,
+                "product_uom": cls.product_a.uom_id.id,
+                "product_uom_qty": 1,
+                "date_expected": cls.date_expected,
+            }
+        )
+        cls.move._action_confirm()
+
+    def test_incoming(self):
+        result = self.report.fetch({"products": [self.product_a.id]})
+        incoming = result[0]["incoming"]
+        assert len(incoming) == 1
+        assert incoming[0]["qty"] == 1
+        assert incoming[0]["date"] == "2020-01-15"
+        assert not result[0]["outgoing"]
+
+    def test_incoming__location_not_matching(self):
+        result = self.report.fetch({"products": [self.product_a.id], "locations": [self.location_2.id]})
+        assert not result[0]["incoming"]
+
+    def test_incoming__location_matching(self):
+        result = self.report.fetch({"products": [self.product_a.id], "locations": [self.location_1.id]})
+        incoming = result[0]["incoming"]
+        assert len(incoming) == 1
+
+    def test_incoming__with_category(self):
+        result = self.report.fetch({"categories": [self.category.id], "groupBy": "category"})
+        incoming = result[0]["incoming"]
+        assert len(incoming) == 1
+
+    def test_outgoing(self):
+        self.move.location_id = self.location_1
+        self.move.location_dest_id = self.customer_location
+        result = self.report.fetch({"products": [self.product_a.id]})
+        outgoing = result[0]["outgoing"]
+        assert len(outgoing) == 1
+        assert outgoing[0]["qty"] == 1
+        assert not result[0]["incoming"]
+
+    def test_outgoing__location_not_matching(self):
+        self.move.location_id = self.location_1
+        self.move.location_dest_id = self.customer_location
+        result = self.report.fetch({"products": [self.product_a.id], "locations": [self.location_2.id]})
+        assert not result[0]["outgoing"]
+
+    def test_outgoing__location_matching(self):
+        self.move.location_id = self.location_1
+        self.move.location_dest_id = self.customer_location
+        result = self.report.fetch({"products": [self.product_a.id], "locations": [self.location_1.id]})
+        outgoing = result[0]["outgoing"]
+        assert len(outgoing) == 1
+
+    def test_outgoing__with_category(self):
+        self.move.location_id = self.location_1
+        self.move.location_dest_id = self.customer_location
+        result = self.report.fetch({"categories": [self.category.id], "groupBy": "category"})
+        outgoing = result[0]["outgoing"]
+        assert len(outgoing) == 1
+
+    def test_date_in_specific_timezone(self):
+        result = self.report.with_context(tz="EST").fetch({"products": [self.product_a.id]})
+        incoming = result[0]["incoming"]
+        assert incoming[0]["date"] == "2020-01-14"
 
 
 class TestPurchasedQuantity(ForecastReportCase):
