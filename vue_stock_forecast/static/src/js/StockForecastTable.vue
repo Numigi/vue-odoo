@@ -8,7 +8,7 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column :label="translate('Stock')" width="150" align="center">
+      <el-table-column :label="translate('Stock ')" width="160" align="center">
         <template slot-scope="scope">
           <div class="stock-forecast-table__link" @click="currentStockClicked(scope.row)" v-if="scope.row.currentStock">
             {{ displayCurrentStock(scope.row) }}
@@ -16,35 +16,35 @@
           <div v-else>0</div>
         </template>
       </el-table-column>
-      <el-table-column :label="translate('Reserved')" width="150" align="center">
+      <el-table-column :label="translate('Reserved ')" width="160" align="center">
         <template slot-scope="scope">
           <div>
             {{ displayReservedStock(scope.row) }}
           </div>
         </template>
       </el-table-column>
-      <el-table-column :label="translate('Available')" width="150" align="center">
+      <el-table-column :label="translate('Available ')" width="160" align="center">
         <template slot-scope="scope">
           <div>
             {{ displayAvailableStock(scope.row) }}
           </div>
         </template>
       </el-table-column>
-      <el-table-column :label="translate('Min / Max')" width="150" align="center">
+      <el-table-column :label="translate('Min / Max ')" width="160" align="center">
         <template slot-scope="scope">
           <div class="stock-forecast-table__link" @click="minMaxClicked(scope.row)">
             {{ displayMinMax(scope.row) }}
           </div>
         </template>
       </el-table-column>
-      <el-table-column :label="translate('Quotation')" width="150" align="center">
+      <el-table-column :label="translate('Quotation ')" width="160" align="center">
         <template slot-scope="scope">
           <div class="stock-forecast-table__link" @click="purchasedClicked(scope.row)">
             {{ displayPurchased(scope.row) }}
           </div>
         </template>
       </el-table-column>
-      <el-table-column v-for="dateGroup in dateGroups" :key="dateGroup.key" :label="dateGroup.date" width="150" align="center">
+      <el-table-column v-for="dateGroup in dateGroups" :key="dateGroup.key" :label="dateGroup.date" width="160" align="center">
         <template slot-scope="scope">
           <div class="stock-forecast-table__link stock-forecast-table__amount"
             @click="moveAmountClicked(scope.row, dateGroup.date)"

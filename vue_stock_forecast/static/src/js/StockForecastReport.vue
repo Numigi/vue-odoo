@@ -2,18 +2,24 @@
 
 <div class="stock-forecast-report" v-show="visible">
     <el-card class="stock-forecast-report__filters">
-        <el-form :model="$data" label-width="150px" label-position="left" inline>
-            <el-form-item :label="translate('Location')">
+        <el-form :model="$data" label-width="160px" label-position="left" inline>
+            <el-form-item :label="translate('Location ')">
                 <many2many ref="locations" :search="searchStockLocations" @change="onLocationChange"></many2many>
             </el-form-item>
-            <el-form-item :label="translate('Supplier')">
+            <el-form-item :label="translate('Supplier ')">
                 <many2many ref="suppliers" :search="searchSuppliers" @change="onSupplierChange"></many2many>
+            </el-form-item>
+            <el-form-item :label="translate('Products ')" v-show="rowGroupBy === 'product'">
+                <many2many ref="products" :search="searchProducts" @change="onProductChange"></many2many>
+            </el-form-item>
+            <el-form-item :label="translate('Product Categories ')">
+                <many2many ref="categories" :search="searchProductCategories" @change="onProductCategoryChange"></many2many>
             </el-form-item>
         </el-form>
 
         <!-- Product / Category Options -->
-        <el-form :model="$data" label-width="150px" label-position="left" inline>
-            <el-form-item :label="translate('Rows')">
+        <el-form :model="$data" label-width="160px" label-position="left" inline>
+            <el-form-item :label="translate('Rows ')">
                 <el-select v-model="rowGroupBy" @change="onRowGroupByChange">
                     <el-option
                         :label="item.label" :value="item.value"
@@ -21,17 +27,7 @@
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item :label="translate('Products')" v-show="rowGroupBy === 'product'">
-                <many2many ref="products" :search="searchProducts" @change="onProductChange"></many2many>
-            </el-form-item>
-            <el-form-item :label="translate('Product Categories')">
-                <many2many ref="categories" :search="searchProductCategories" @change="onProductCategoryChange"></many2many>
-            </el-form-item>
-        </el-form>
-
-        <!-- Date Options -->
-        <el-form :model="$data" label-width="150px" label-position="left" inline>
-            <el-form-item :label="translate('Columns')">
+            <el-form-item :label="translate('Columns ')">
                 <el-select v-model="dateGroupBy">
                     <el-option
                         :label="item.label" :value="item.value"
@@ -39,17 +35,17 @@
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item :label="translate('Start Date')">
+            <el-form-item :label="translate('Start Date ')">
                 <el-date-picker type="date" v-model="dateFrom"></el-date-picker>
             </el-form-item>
-            <el-form-item :label="translate('End Date')">
+            <el-form-item :label="translate('End Date ')">
                 <el-date-picker type="date" v-model="dateTo"></el-date-picker>
             </el-form-item>
         </el-form>
     </el-card>
     <el-card>
-        <el-form :model="$data" label-width="150px" label-position="left" inline>
-            <el-form-item :label="translate('Search')" style="margin: 0;">
+        <el-form :model="$data" label-width="160px" label-position="left" inline>
+            <el-form-item :label="translate('Search ')" style="margin: 0;">
                 <el-input class="inline-input" v-model="autocompleteValue" style="width: 400px;"></el-input>
             </el-form-item>
         </el-form>
@@ -129,15 +125,15 @@ export default {
         },
         dateGroupByOptions(){
             return [
-                {value: "day", label: this.translate("Day")},
-                {value: "week", label: this.translate("Week")},
-                {value: "month", label: this.translate("Month")},
+                {value: "day", label: this.translate("Day ")},
+                {value: "week", label: this.translate("Week ")},
+                {value: "month", label: this.translate("Month ")},
             ];
         },
         rowGroupByOptions(){
             return [
-                {value: "product", label: this.translate("Product")},
-                {value: "category", label: this.translate("Product Category")},
+                {value: "product", label: this.translate("Product ")},
+                {value: "category", label: this.translate("Product Category ")},
             ];
         },
         filteredRows() {

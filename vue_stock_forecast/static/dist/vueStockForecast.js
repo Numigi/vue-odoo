@@ -167,10 +167,6 @@ Object.defineProperty(exports, "__esModule", {
 //
 //
 //
-//
-//
-//
-//
 
 
 exports.default = {
@@ -229,10 +225,10 @@ exports.default = {
             return this.dateTo || moment(new Date()).add(6, this.dateGroupBy).toDate();
         },
         dateGroupByOptions: function dateGroupByOptions() {
-            return [{ value: "day", label: this.translate("Day") }, { value: "week", label: this.translate("Week") }, { value: "month", label: this.translate("Month") }];
+            return [{ value: "day", label: this.translate("Day ") }, { value: "week", label: this.translate("Week ") }, { value: "month", label: this.translate("Month ") }];
         },
         rowGroupByOptions: function rowGroupByOptions() {
-            return [{ value: "product", label: this.translate("Product") }, { value: "category", label: this.translate("Product Category") }];
+            return [{ value: "product", label: this.translate("Product ") }, { value: "category", label: this.translate("Product Category ") }];
         },
         filteredRows: function filteredRows() {
             var stringToMatch = (this.autocompleteValue || "").toLowerCase();
@@ -535,7 +531,7 @@ var render = function() {
             {
               attrs: {
                 model: _vm.$data,
-                "label-width": "150px",
+                "label-width": "160px",
                 "label-position": "left",
                 inline: ""
               }
@@ -543,7 +539,7 @@ var render = function() {
             [
               _c(
                 "el-form-item",
-                { attrs: { label: _vm.translate("Location") } },
+                { attrs: { label: _vm.translate("Location ") } },
                 [
                   _c("many2many", {
                     ref: "locations",
@@ -556,12 +552,48 @@ var render = function() {
               _vm._v(" "),
               _c(
                 "el-form-item",
-                { attrs: { label: _vm.translate("Supplier") } },
+                { attrs: { label: _vm.translate("Supplier ") } },
                 [
                   _c("many2many", {
                     ref: "suppliers",
                     attrs: { search: _vm.searchSuppliers },
                     on: { change: _vm.onSupplierChange }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "el-form-item",
+                {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: _vm.rowGroupBy === "product",
+                      expression: "rowGroupBy === 'product'"
+                    }
+                  ],
+                  attrs: { label: _vm.translate("Products ") }
+                },
+                [
+                  _c("many2many", {
+                    ref: "products",
+                    attrs: { search: _vm.searchProducts },
+                    on: { change: _vm.onProductChange }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "el-form-item",
+                { attrs: { label: _vm.translate("Product Categories ") } },
+                [
+                  _c("many2many", {
+                    ref: "categories",
+                    attrs: { search: _vm.searchProductCategories },
+                    on: { change: _vm.onProductCategoryChange }
                   })
                 ],
                 1
@@ -575,7 +607,7 @@ var render = function() {
             {
               attrs: {
                 model: _vm.$data,
-                "label-width": "150px",
+                "label-width": "160px",
                 "label-position": "left",
                 inline: ""
               }
@@ -583,7 +615,7 @@ var render = function() {
             [
               _c(
                 "el-form-item",
-                { attrs: { label: _vm.translate("Rows") } },
+                { attrs: { label: _vm.translate("Rows ") } },
                 [
                   _c(
                     "el-select",
@@ -610,57 +642,7 @@ var render = function() {
               _vm._v(" "),
               _c(
                 "el-form-item",
-                {
-                  directives: [
-                    {
-                      name: "show",
-                      rawName: "v-show",
-                      value: _vm.rowGroupBy === "product",
-                      expression: "rowGroupBy === 'product'"
-                    }
-                  ],
-                  attrs: { label: _vm.translate("Products") }
-                },
-                [
-                  _c("many2many", {
-                    ref: "products",
-                    attrs: { search: _vm.searchProducts },
-                    on: { change: _vm.onProductChange }
-                  })
-                ],
-                1
-              ),
-              _vm._v(" "),
-              _c(
-                "el-form-item",
-                { attrs: { label: _vm.translate("Product Categories") } },
-                [
-                  _c("many2many", {
-                    ref: "categories",
-                    attrs: { search: _vm.searchProductCategories },
-                    on: { change: _vm.onProductCategoryChange }
-                  })
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "el-form",
-            {
-              attrs: {
-                model: _vm.$data,
-                "label-width": "150px",
-                "label-position": "left",
-                inline: ""
-              }
-            },
-            [
-              _c(
-                "el-form-item",
-                { attrs: { label: _vm.translate("Columns") } },
+                { attrs: { label: _vm.translate("Columns ") } },
                 [
                   _c(
                     "el-select",
@@ -686,7 +668,7 @@ var render = function() {
               _vm._v(" "),
               _c(
                 "el-form-item",
-                { attrs: { label: _vm.translate("Start Date") } },
+                { attrs: { label: _vm.translate("Start Date ") } },
                 [
                   _c("el-date-picker", {
                     attrs: { type: "date" },
@@ -704,7 +686,7 @@ var render = function() {
               _vm._v(" "),
               _c(
                 "el-form-item",
-                { attrs: { label: _vm.translate("End Date") } },
+                { attrs: { label: _vm.translate("End Date ") } },
                 [
                   _c("el-date-picker", {
                     attrs: { type: "date" },
@@ -734,7 +716,7 @@ var render = function() {
             {
               attrs: {
                 model: _vm.$data,
-                "label-width": "150px",
+                "label-width": "160px",
                 "label-position": "left",
                 inline: ""
               }
@@ -744,7 +726,7 @@ var render = function() {
                 "el-form-item",
                 {
                   staticStyle: { margin: "0" },
-                  attrs: { label: _vm.translate("Search") }
+                  attrs: { label: _vm.translate("Search ") }
                 },
                 [
                   _c("el-input", {
@@ -850,8 +832,8 @@ var render = function() {
           _vm._v(" "),
           _c("el-table-column", {
             attrs: {
-              label: _vm.translate("Stock"),
-              width: "150",
+              label: _vm.translate("Stock "),
+              width: "160",
               align: "center"
             },
             scopedSlots: _vm._u([
@@ -887,8 +869,8 @@ var render = function() {
           _vm._v(" "),
           _c("el-table-column", {
             attrs: {
-              label: _vm.translate("Reserved"),
-              width: "150",
+              label: _vm.translate("Reserved "),
+              width: "160",
               align: "center"
             },
             scopedSlots: _vm._u([
@@ -911,8 +893,8 @@ var render = function() {
           _vm._v(" "),
           _c("el-table-column", {
             attrs: {
-              label: _vm.translate("Available"),
-              width: "150",
+              label: _vm.translate("Available "),
+              width: "160",
               align: "center"
             },
             scopedSlots: _vm._u([
@@ -935,8 +917,8 @@ var render = function() {
           _vm._v(" "),
           _c("el-table-column", {
             attrs: {
-              label: _vm.translate("Min / Max"),
-              width: "150",
+              label: _vm.translate("Min / Max "),
+              width: "160",
               align: "center"
             },
             scopedSlots: _vm._u([
@@ -970,8 +952,8 @@ var render = function() {
           _vm._v(" "),
           _c("el-table-column", {
             attrs: {
-              label: _vm.translate("Quotation"),
-              width: "150",
+              label: _vm.translate("Quotation "),
+              width: "160",
               align: "center"
             },
             scopedSlots: _vm._u([
@@ -1006,7 +988,7 @@ var render = function() {
           _vm._l(_vm.dateGroups, function(dateGroup) {
             return _c("el-table-column", {
               key: dateGroup.key,
-              attrs: { label: dateGroup.date, width: "150", align: "center" },
+              attrs: { label: dateGroup.date, width: "160", align: "center" },
               scopedSlots: _vm._u([
                 {
                   key: "default",

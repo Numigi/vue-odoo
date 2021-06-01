@@ -340,6 +340,33 @@ var StockForecastReport = AbstractAction.extend(ControlPanelMixin, {
 
 core.action_registry.add("stock_forecast_report", StockForecastReport);
 
+/**
+/ Force add terms to the generated .pot file
+/
+/ Note that terms end with a trailing space
+/ This ensures that the terms don't collide with existing non-javascript (python) transactions.
+/ Odoo skips new javascript translations if the same python translation exists.
+*/
+_t("Available ");
+_t("Columns ");
+_t("Day ");
+_t("End Date ");
+_t("Location ");
+_t("Min / Max ");
+_t("Month ");
+_t("Product ");
+_t("Product Categories ");
+_t("Product Category ");
+_t("Products ");
+_t("Quotation ");
+_t("Reserved ");
+_t("Rows ");
+_t("Search ");
+_t("Start Date ");
+_t("Stock ");
+_t("Supplier ");
+_t("Week ");
+
 return StockForecastReport;
 
 });
