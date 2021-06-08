@@ -95,8 +95,8 @@ When typing in the search bar, the lines are filtered in real-time.
 
 .. image:: static/description/report_lines_filtered.png
 
-Smart Button
-------------
+Product Smart Button
+--------------------
 A smart button is added on the form view of products in order to show the report.
 
 .. image:: static/description/product_form.png
@@ -104,6 +104,16 @@ A smart button is added on the form view of products in order to show the report
 When accessing the report from a product template with multiple variants, the report is displayed for all variants.
 
 .. image:: static/description/report_with_product_variants.png
+
+Purchase Order Smart Button
+---------------------------
+Since version 1.3.0 of the module, a smart button is also available from a purchase order.
+
+.. image:: static/description/purchase_order_form.png
+
+When I click on the button, the report is opened with the products contained in the purchase order.
+
+.. image:: static/description/report_from_purchase_order.png
 
 Contributors
 ------------

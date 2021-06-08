@@ -51,13 +51,33 @@ var StockForecastReport = AbstractAction.extend(ControlPanelMixin, {
      * Handle passing a default product id through the context.
      */
     async setDefaultProduct(){
-        if(this.context.product_id){
+        const productIds = await this._getProductIdsFromContext()
+        if(productIds.length){
             var query = new QueryBuilder("product.product", ["display_name"]);
-            query.filter([["id", "=", this.context.product_id]]);
+            query.filter([["id", "in", productIds]]);
             var products = (await query.searchRead()).map((p) => [p.id, p.display_name]);
             this.$vm.setProducts(products);
             this.onFilterChange();
         }
+    },
+    async _getProductIdsFromContext() {
+        const context = this.context
+        if (context.product_id) {
+            return [context.product_id]
+        }
+        else if (context.purchase_order_id) {
+            return await this._getProductIdsFromPurchaseOrder(context.purchase_order_id)
+        }
+        return []
+    },
+    async _getProductIdsFromPurchaseOrder(order_id) {
+        const query = new QueryBuilder("purchase.order.line", ["product_id"]);
+        query.filter([
+            ["order_id", "=", order_id],
+            ["product_id.type", "in", ["consu", "product"]],
+        ])
+        const result = await query.searchRead()
+        return result.map((p) => p.product_id[0]);
     },
     /**
      * Handle passing a default product template id through the context.
