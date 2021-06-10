@@ -267,8 +267,8 @@ var StockForecastReport = AbstractAction.extend(ControlPanelMixin, {
         var dayAfterDateTo = moment(dateTo).add(1, "day").format("YYYY-MM-DD");
         var domain = [
             ["state", "not in", ["done", "cancel"]],
-            ["date_expected", ">=", dateFrom],
-            ["date_expected", "<", dayAfterDateTo],
+            ["date_expected", ">=", this.toUTC(dateFrom)],
+            ["date_expected", "<", this.toUTC(dayAfterDateTo)],
         ];
 
         if(row.productId){
@@ -297,6 +297,9 @@ var StockForecastReport = AbstractAction.extend(ControlPanelMixin, {
             domain,
         });
     },
+    toUTC(date) {
+        return moment(date).utc().format("YYYY-MM-DD HH:mm:ss")
+    },
     /**
      * Get the domain related to locations used for filtering stock moves.
      *
@@ -315,9 +318,13 @@ var StockForecastReport = AbstractAction.extend(ControlPanelMixin, {
             domain.push(["location_dest_id.usage", "=", "internal"]);
         }
         else{
-            domain.push("|");
-            domain.push(["location_id.usage", "=", "internal"]);
-            domain.push(["location_dest_id.usage", "=", "internal"]);
+            domain.push("|"),
+            domain.push("&"),
+            domain.push(["location_id.usage", "!=", "internal"]),
+            domain.push(["location_dest_id.usage", "=", "internal"]),
+            domain.push("&"),
+            domain.push(["location_id.usage", "=", "internal"]),
+            domain.push(["location_dest_id.usage", "!=", "internal"]),
         }
         return domain;
     },
