@@ -416,10 +416,10 @@ exports.default = {
             var outgoingQty = row.outgoing.filter(movesBeforeDate).reduce(stockMoveSum, 0);
             var stockAtDate = row.currentStock + incomingQty - outgoingQty;
 
-            var dateFrom = moment(dateTo).subtract(1, this.dateGroupBy).format("YYYY-MM-DD");
+            var dateFrom = this.getDateFrom(dateTo);
 
             function movesAtDate(move) {
-                return dateFrom < move.date && move.date <= dateTo;
+                return dateFrom <= move.date && move.date <= dateTo;
             }
             var incomingQtyAtDate = row.incoming.filter(movesAtDate).reduce(stockMoveSum, 0);
             var outgoingQtyAtDate = row.outgoing.filter(movesAtDate).reduce(stockMoveSum, 0);
@@ -461,8 +461,15 @@ exports.default = {
             this.$emit('purchased-clicked', row);
         },
         moveAmountClicked: function moveAmountClicked(row, dateTo) {
-            var dateFrom = moment(dateTo).subtract(1, this.dateGroupBy).add(1, "day").format("YYYY-MM-DD");
+            var dateFrom = this.getDateFrom(dateTo);
             this.$emit('move-amount-clicked', row, dateFrom, dateTo);
+        },
+        getDateFrom: function getDateFrom(dateTo) {
+            if (this.dateGroupBy === "month") {
+                return moment(dateTo).startOf("month").format("YYYY-MM-DD");
+            } else {
+                return moment(dateTo).subtract(1, "week").add(1, "day").format("YYYY-MM-DD");
+            }
         }
     }
 };

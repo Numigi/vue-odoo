@@ -3,7 +3,7 @@
 
 {
     "name": "Vue Stock Forecast",
-    "version": "1.3.0",
+    "version": "1.3.1",
     "author": "Numigi",
     "maintainer": "Numigi",
     "website": "https://bit.ly/numigi-com",
