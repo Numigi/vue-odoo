@@ -318,13 +318,13 @@ var StockForecastReport = AbstractAction.extend(ControlPanelMixin, {
             domain.push(["location_dest_id.usage", "=", "internal"]);
         }
         else{
-            domain.push("|"),
-            domain.push("&"),
-            domain.push(["location_id.usage", "!=", "internal"]),
-            domain.push(["location_dest_id.usage", "=", "internal"]),
-            domain.push("&"),
-            domain.push(["location_id.usage", "=", "internal"]),
-            domain.push(["location_dest_id.usage", "!=", "internal"]),
+            domain.push("|");
+            domain.push("&");
+            domain.push(["location_id.usage", "!=", "internal"]);
+            domain.push(["location_dest_id.usage", "=", "internal"]);
+            domain.push("&");
+            domain.push(["location_id.usage", "=", "internal"]);
+            domain.push(["location_dest_id.usage", "!=", "internal"]);
         }
         return domain;
     },
