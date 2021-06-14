@@ -813,7 +813,9 @@ var render = function() {
     [
       _c(
         "el-table",
-        { attrs: { data: _vm.rows, height: "800", border: "" } },
+        {
+          attrs: { data: _vm.rows, height: "800", border: "", "row-key": "key" }
+        },
         [
           _c("el-table-column", {
             attrs: {

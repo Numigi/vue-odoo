@@ -9,6 +9,8 @@ var data = require("web.data");
 
 var ReportComponent = Vue.extend(vueStockForecast.StockForecastReport);
 
+var nextRowKey = 1
+
 var _t = core._t;
 
 var StockForecastReport = AbstractAction.extend(ControlPanelMixin, {
@@ -141,6 +143,12 @@ var StockForecastReport = AbstractAction.extend(ControlPanelMixin, {
     },
     async onFilterChange(products){
         var rows = await this._fetchRowsData();
+        rows = rows.map(row => {
+            return {
+                key: nextRowKey++,
+                ...row
+            }
+        });
         this.$vm.rows = rows.sort((r1, r2) => r1.label > r2.label);
     },
     _fetchRowsData() {
