@@ -353,21 +353,6 @@ Object.defineProperty(exports, "__esModule", {
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 exports.default = {
@@ -401,36 +386,16 @@ exports.default = {
             default: true
         }
     },
-    data: function data() {
-        return {
-            dateGroups: []
-        };
-    },
-    mounted: function mounted() {
-        this.computeDateGroups();
-    },
-
-    watch: {
-        dateFrom: function dateFrom() {
-            this.computeDateGroups();
-        },
-        dateTo: function dateTo() {
-            this.computeDateGroups();
-        },
-        dateGroupBy: function dateGroupBy() {
-            this.computeDateGroups();
-        }
-    },
     computed: {
+        dateGroups: function dateGroups() {
+            return getDateRange(this.dateFrom, this.dateTo, this.dateGroupBy || "month");
+        },
         rowGroupLabel: function rowGroupLabel() {
             var label = this.rowGroupBy === "product" ? "Product" : "Product Category";
             return this.translate(label);
         }
     },
     methods: {
-        computeDateGroups: function computeDateGroups() {
-            this.dateGroups = makeDateGroups(this.dateFrom, this.dateTo, this.dateGroupBy || "month");
-        },
         productHasMovesAtDate: function productHasMovesAtDate(row, dateTo) {
             var dateFrom = moment(dateTo).subtract(1, this.dateGroupBy || "month").format("YYYY-MM-DD");
             function movesAtDate(move) {
@@ -512,7 +477,7 @@ exports.default = {
 
 var nextGroupKey = 1;
 
-function makeDateGroups(dateFrom, dateTo, dateGroupBy) {
+function getDateRange(dateFrom, dateTo, dateGroupBy) {
     var dateRange = [];
     var currentMoment = moment(dateFrom);
     var momentTo = moment(dateTo);
@@ -842,208 +807,246 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "stock-forecast-table" }, [
-    _c("table", [
-      _c("thead", [
-        _c(
-          "tr",
-          [
-            _c("th", [
-              _vm._v(
-                "\n                    " +
-                  _vm._s(_vm.rowGroupLabel) +
-                  "\n                "
-              )
-            ]),
-            _vm._v(" "),
-            _c("th", [
-              _vm._v(
-                "\n                    " +
-                  _vm._s(_vm.translate("Stock ")) +
-                  "\n                "
-              )
-            ]),
-            _vm._v(" "),
-            _c("th", [
-              _vm._v(
-                "\n                    " +
-                  _vm._s(_vm.translate("Reserved ")) +
-                  "\n                "
-              )
-            ]),
-            _vm._v(" "),
-            _c("th", [
-              _vm._v(
-                "\n                    " +
-                  _vm._s(_vm.translate("Available ")) +
-                  "\n                "
-              )
-            ]),
-            _vm._v(" "),
-            _c("th", [
-              _vm._v(
-                "\n                    " +
-                  _vm._s(_vm.translate("Min / Max ")) +
-                  "\n                "
-              )
-            ]),
-            _vm._v(" "),
-            _c("th", [
-              _vm._v(
-                "\n                    " +
-                  _vm._s(_vm.translate("Quotation ")) +
-                  "\n                "
-              )
-            ]),
-            _vm._v(" "),
-            _vm._l(_vm.dateGroups, function(dateGroup) {
-              return _c("th", { key: dateGroup.date }, [
-                _vm._v(
-                  "\n                    " +
-                    _vm._s(dateGroup.date) +
-                    "\n                "
-                )
-              ])
-            })
-          ],
-          2
-        )
-      ]),
-      _vm._v(" "),
+  return _c(
+    "div",
+    { staticClass: "stock-forecast-table" },
+    [
       _c(
-        "tbody",
-        _vm._l(_vm.rows, function(row) {
-          return _c(
-            "tr",
-            { key: row.key },
-            [
-              _c("td", [
-                _vm._v(
-                  "\n                    " +
-                    _vm._s(row.label) +
-                    "\n                "
-                )
-              ]),
-              _vm._v(" "),
-              _c("td", [
-                row.currentStock
-                  ? _c(
+        "el-table",
+        {
+          attrs: { data: _vm.rows, height: "800", border: "", "row-key": "key" }
+        },
+        [
+          _c("el-table-column", {
+            attrs: {
+              label: _vm.rowGroupLabel,
+              width: "300",
+              fixed: _vm.firstColumnFixed
+            },
+            scopedSlots: _vm._u([
+              {
+                key: "default",
+                fn: function(scope) {
+                  return [
+                    _c("div", [
+                      _vm._v(
+                        "\n          " + _vm._s(scope.row.label) + "\n        "
+                      )
+                    ])
+                  ]
+                }
+              }
+            ])
+          }),
+          _vm._v(" "),
+          _c("el-table-column", {
+            attrs: {
+              label: _vm.translate("Stock "),
+              width: "160",
+              align: "center"
+            },
+            scopedSlots: _vm._u([
+              {
+                key: "default",
+                fn: function(scope) {
+                  return [
+                    scope.row.currentStock
+                      ? _c(
+                          "div",
+                          {
+                            staticClass: "stock-forecast-table__link",
+                            on: {
+                              click: function($event) {
+                                _vm.currentStockClicked(scope.row)
+                              }
+                            }
+                          },
+                          [
+                            _vm._v(
+                              "\n          " +
+                                _vm._s(_vm.displayCurrentStock(scope.row)) +
+                                "\n        "
+                            )
+                          ]
+                        )
+                      : _c("div", [_vm._v("0")])
+                  ]
+                }
+              }
+            ])
+          }),
+          _vm._v(" "),
+          _c("el-table-column", {
+            attrs: {
+              label: _vm.translate("Reserved "),
+              width: "160",
+              align: "center"
+            },
+            scopedSlots: _vm._u([
+              {
+                key: "default",
+                fn: function(scope) {
+                  return [
+                    _c("div", [
+                      _vm._v(
+                        "\n          " +
+                          _vm._s(_vm.displayReservedStock(scope.row)) +
+                          "\n        "
+                      )
+                    ])
+                  ]
+                }
+              }
+            ])
+          }),
+          _vm._v(" "),
+          _c("el-table-column", {
+            attrs: {
+              label: _vm.translate("Available "),
+              width: "160",
+              align: "center"
+            },
+            scopedSlots: _vm._u([
+              {
+                key: "default",
+                fn: function(scope) {
+                  return [
+                    _c("div", [
+                      _vm._v(
+                        "\n          " +
+                          _vm._s(_vm.displayAvailableStock(scope.row)) +
+                          "\n        "
+                      )
+                    ])
+                  ]
+                }
+              }
+            ])
+          }),
+          _vm._v(" "),
+          _c("el-table-column", {
+            attrs: {
+              label: _vm.translate("Min / Max "),
+              width: "160",
+              align: "center"
+            },
+            scopedSlots: _vm._u([
+              {
+                key: "default",
+                fn: function(scope) {
+                  return [
+                    _c(
                       "div",
                       {
                         staticClass: "stock-forecast-table__link",
                         on: {
                           click: function($event) {
-                            _vm.currentStockClicked(row)
+                            _vm.minMaxClicked(scope.row)
                           }
                         }
                       },
                       [
                         _vm._v(
-                          "\n                        " +
-                            _vm._s(_vm.displayCurrentStock(row)) +
-                            "\n                    "
+                          "\n          " +
+                            _vm._s(_vm.displayMinMax(scope.row)) +
+                            "\n        "
                         )
                       ]
                     )
-                  : _c("div", [_vm._v("0")])
-              ]),
-              _vm._v(" "),
-              _c("td", [
-                _vm._v(
-                  "\n                    " +
-                    _vm._s(_vm.displayReservedStock(row)) +
-                    "\n                "
-                )
-              ]),
-              _vm._v(" "),
-              _c("td", [
-                _vm._v(
-                  "\n                    " +
-                    _vm._s(_vm.displayAvailableStock(row)) +
-                    "\n                "
-                )
-              ]),
-              _vm._v(" "),
-              _c("td", [
-                _c(
-                  "div",
-                  {
-                    staticClass: "stock-forecast-table__link",
-                    on: {
-                      click: function($event) {
-                        _vm.minMaxClicked(row)
-                      }
-                    }
-                  },
-                  [
-                    _vm._v(
-                      "\n                        " +
-                        _vm._s(_vm.displayMinMax(row)) +
-                        "\n                    "
-                    )
                   ]
-                )
-              ]),
-              _vm._v(" "),
-              _c("td", [
-                _c(
-                  "div",
-                  {
-                    staticClass: "stock-forecast-table__link",
-                    on: {
-                      click: function($event) {
-                        _vm.purchasedClicked(row)
-                      }
-                    }
-                  },
-                  [
-                    _vm._v(
-                      "\n                        " +
-                        _vm._s(_vm.displayPurchased(row)) +
-                        "\n                    "
-                    )
-                  ]
-                )
-              ]),
-              _vm._v(" "),
-              _vm._l(_vm.dateGroups, function(dateGroup) {
-                return _c("td", { key: dateGroup.key }, [
-                  _vm.productHasMovesAtDate(row, dateGroup.date)
-                    ? _c(
-                        "div",
-                        {
-                          staticClass:
-                            "stock-forecast-table__link stock-forecast-table__amount",
-                          on: {
-                            click: function($event) {
-                              _vm.moveAmountClicked(row, dateGroup.date)
-                            }
+                }
+              }
+            ])
+          }),
+          _vm._v(" "),
+          _c("el-table-column", {
+            attrs: {
+              label: _vm.translate("Quotation "),
+              width: "160",
+              align: "center"
+            },
+            scopedSlots: _vm._u([
+              {
+                key: "default",
+                fn: function(scope) {
+                  return [
+                    _c(
+                      "div",
+                      {
+                        staticClass: "stock-forecast-table__link",
+                        on: {
+                          click: function($event) {
+                            _vm.purchasedClicked(scope.row)
                           }
-                        },
-                        [
-                          _vm._v(
-                            "\n                        " +
-                              _vm._s(_vm.getStockValue(row, dateGroup.date)) +
-                              "\n                    "
-                          )
-                        ]
-                      )
-                    : _c("div", [
+                        }
+                      },
+                      [
                         _vm._v(
-                          "\n                        " +
-                            _vm._s(_vm.getStockValue(row, dateGroup.date)) +
-                            "\n                    "
+                          "\n          " +
+                            _vm._s(_vm.displayPurchased(scope.row)) +
+                            "\n        "
                         )
-                      ])
-                ])
-              })
-            ],
-            2
-          )
-        })
+                      ]
+                    )
+                  ]
+                }
+              }
+            ])
+          }),
+          _vm._v(" "),
+          _vm._l(_vm.dateGroups, function(dateGroup) {
+            return _c("el-table-column", {
+              key: dateGroup.key,
+              attrs: { label: dateGroup.date, width: "160", align: "center" },
+              scopedSlots: _vm._u([
+                {
+                  key: "default",
+                  fn: function(scope) {
+                    return [
+                      _vm.productHasMovesAtDate(scope.row, dateGroup.date)
+                        ? _c(
+                            "div",
+                            {
+                              staticClass:
+                                "stock-forecast-table__link stock-forecast-table__amount",
+                              on: {
+                                click: function($event) {
+                                  _vm.moveAmountClicked(
+                                    scope.row,
+                                    dateGroup.date
+                                  )
+                                }
+                              }
+                            },
+                            [
+                              _vm._v(
+                                "\n          " +
+                                  _vm._s(
+                                    _vm.getStockValue(scope.row, dateGroup.date)
+                                  ) +
+                                  "\n        "
+                              )
+                            ]
+                          )
+                        : _c("div", [
+                            _vm._v(
+                              _vm._s(
+                                _vm.getStockValue(scope.row, dateGroup.date)
+                              )
+                            )
+                          ])
+                    ]
+                  }
+                }
+              ])
+            })
+          })
+        ],
+        2
       )
-    ])
-  ])
+    ],
+    1
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
