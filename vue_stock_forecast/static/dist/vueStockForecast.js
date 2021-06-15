@@ -386,16 +386,50 @@ exports.default = {
             default: true
         }
     },
-    computed: {
-        dateGroups: function dateGroups() {
-            return getDateRange(this.dateFrom, this.dateTo, this.dateGroupBy || "month");
+    data: function data() {
+        return {
+            dateGroups: []
+        };
+    },
+    mounted: function mounted() {
+        this.computeDateGroups();
+    },
+
+    watch: {
+        dateFrom: function dateFrom() {
+            this.computeDateGroups();
         },
+        dateTo: function dateTo() {
+            this.computeDateGroups();
+        },
+        dateGroupBy: function dateGroupBy() {
+            this.computeDateGroups();
+        }
+    },
+    computed: {
         rowGroupLabel: function rowGroupLabel() {
             var label = this.rowGroupBy === "product" ? "Product" : "Product Category";
             return this.translate(label);
         }
     },
     methods: {
+        computeDateGroups: function computeDateGroups() {
+            var _this = this;
+
+            this.dateGroups = makeDateGroups(this.dateFrom, this.dateTo, this.dateGroupBy || "month");
+            setTimeout(function () {
+                return _this.refreshTableLayout();
+            }, 500);
+            setTimeout(function () {
+                return _this.refreshTableLayout();
+            }, 1000);
+            setTimeout(function () {
+                return _this.refreshTableLayout();
+            }, 2000);
+        },
+        refreshTableLayout: function refreshTableLayout() {
+            this.$refs.table.doLayout();
+        },
         productHasMovesAtDate: function productHasMovesAtDate(row, dateTo) {
             var dateFrom = moment(dateTo).subtract(1, this.dateGroupBy || "month").format("YYYY-MM-DD");
             function movesAtDate(move) {
@@ -477,7 +511,7 @@ exports.default = {
 
 var nextGroupKey = 1;
 
-function getDateRange(dateFrom, dateTo, dateGroupBy) {
+function makeDateGroups(dateFrom, dateTo, dateGroupBy) {
     var dateRange = [];
     var currentMoment = moment(dateFrom);
     var momentTo = moment(dateTo);
@@ -814,6 +848,7 @@ var render = function() {
       _c(
         "el-table",
         {
+          ref: "table",
           attrs: { data: _vm.rows, height: "800", border: "", "row-key": "key" }
         },
         [

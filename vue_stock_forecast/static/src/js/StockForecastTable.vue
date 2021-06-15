@@ -1,6 +1,6 @@
 <template>
   <div class="stock-forecast-table">
-    <el-table :data="rows" height="800" border row-key="key">
+    <el-table :data="rows" height="800" border row-key="key" ref="table">
       <el-table-column :label="rowGroupLabel" width="300" :fixed="firstColumnFixed">
         <template slot-scope="scope">
           <div>
@@ -91,16 +91,42 @@ export default {
             default: true,
         },
     },
-    computed: {
-        dateGroups(){
-            return getDateRange(this.dateFrom, this.dateTo, this.dateGroupBy || "month");
+    data: function data() {
+        return {
+            dateGroups: []
+        };
+    },
+    mounted: function mounted() {
+        this.computeDateGroups();
+    },
+
+    watch: {
+        dateFrom: function dateFrom() {
+            this.computeDateGroups();
         },
+        dateTo: function dateTo() {
+            this.computeDateGroups();
+        },
+        dateGroupBy: function dateGroupBy() {
+            this.computeDateGroups();
+        }
+    },
+    computed: {
         rowGroupLabel(){
             var label = this.rowGroupBy === "product" ? "Product" : "Product Category";
             return this.translate(label);
         },
     },
     methods: {
+        computeDateGroups: function computeDateGroups() {
+            this.dateGroups = makeDateGroups(this.dateFrom, this.dateTo, this.dateGroupBy || "month");
+            setTimeout(() => this.refreshTableLayout(), 500)
+            setTimeout(() => this.refreshTableLayout(), 1000)
+            setTimeout(() => this.refreshTableLayout(), 2000)
+        },
+        refreshTableLayout() {
+            this.$refs.table.doLayout();
+        },
         productHasMovesAtDate(row, dateTo){
             var dateFrom = moment(dateTo).subtract(1, this.dateGroupBy || "month").format("YYYY-MM-DD");
             function movesAtDate(move) {
@@ -184,7 +210,7 @@ export default {
 
 let nextGroupKey = 1
 
-function getDateRange(dateFrom, dateTo, dateGroupBy){
+function makeDateGroups(dateFrom, dateTo, dateGroupBy){
     var dateRange = [];
     var currentMoment = moment(dateFrom);
     var momentTo = moment(dateTo);
