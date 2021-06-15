@@ -289,7 +289,7 @@ var StockForecastReport = AbstractAction.extend(ControlPanelMixin, {
             domain.push(["product_id.uom_id", "=", row.uomId]);
         }
 
-        domain = domain.concat(this.getStockMoveLocationDomain());
+        domain.concat(this.getStockMoveLocationDomain());
 
         var actionName = (
             _t("Stock Moves ({date_from} to {date_to})")

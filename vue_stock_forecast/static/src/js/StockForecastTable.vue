@@ -1,76 +1,61 @@
 <template>
-<div class="stock-forecast-table">
-    <table>
-        <thead>
-            <tr>
-                <th>
-                    {{ rowGroupLabel }}
-                </th>
-                <th>
-                    {{ translate('Stock ') }}
-                </th>
-                <th>
-                    {{ translate('Reserved ') }}
-                </th>
-                <th>
-                    {{ translate('Available ') }}
-                </th>
-                <th>
-                    {{ translate('Min / Max ') }}
-                </th>
-                <th>
-                    {{ translate('Quotation ') }}
-                </th>
-                <th v-for="dateGroup in dateGroups" :key="dateGroup.date">
-                    {{ dateGroup.date }}
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="row in rows" :key="row.key">
-                <td>
-                    {{ row.label }}
-                </td>
-                <td>
-                    <div
-                        class="stock-forecast-table__link"
-                        @click="currentStockClicked(row)"
-                        v-if="row.currentStock"
-                    >
-                        {{ displayCurrentStock(row) }}
-                    </div>
-                    <div v-else>0</div>
-                </td>
-                <td>
-                    {{ displayReservedStock(row) }}
-                </td>
-                <td>
-                    {{ displayAvailableStock(row) }}
-                </td>
-                <td>
-                    <div class="stock-forecast-table__link" @click="minMaxClicked(row)">
-                        {{ displayMinMax(row) }}
-                    </div>
-                </td>
-                <td>
-                    <div class="stock-forecast-table__link" @click="purchasedClicked(row)">
-                        {{ displayPurchased(row) }}
-                    </div>
-                </td>
-                <td v-for="dateGroup in dateGroups" :key="dateGroup.key">
-                    <div class="stock-forecast-table__link stock-forecast-table__amount"
-                        @click="moveAmountClicked(row, dateGroup.date)"
-                        v-if="productHasMovesAtDate(row, dateGroup.date)">
-                        {{ getStockValue(row, dateGroup.date) }}
-                    </div>
-                    <div v-else>
-                        {{ getStockValue(row, dateGroup.date) }}
-                    </div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</div>
+  <div class="stock-forecast-table">
+    <el-table :data="rows" height="800" border row-key="key" ref="table">
+      <el-table-column :label="rowGroupLabel" width="300" :fixed="firstColumnFixed">
+        <template slot-scope="scope">
+          <div>
+            {{ scope.row.label }}
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column :label="translate('Stock ')" width="160" align="center">
+        <template slot-scope="scope">
+          <div class="stock-forecast-table__link" @click="currentStockClicked(scope.row)" v-if="scope.row.currentStock">
+            {{ displayCurrentStock(scope.row) }}
+          </div>
+          <div v-else>0</div>
+        </template>
+      </el-table-column>
+      <el-table-column :label="translate('Reserved ')" width="160" align="center">
+        <template slot-scope="scope">
+          <div>
+            {{ displayReservedStock(scope.row) }}
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column :label="translate('Available ')" width="160" align="center">
+        <template slot-scope="scope">
+          <div>
+            {{ displayAvailableStock(scope.row) }}
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column :label="translate('Min / Max ')" width="160" align="center">
+        <template slot-scope="scope">
+          <div class="stock-forecast-table__link" @click="minMaxClicked(scope.row)">
+            {{ displayMinMax(scope.row) }}
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column :label="translate('Quotation ')" width="160" align="center">
+        <template slot-scope="scope">
+          <div class="stock-forecast-table__link" @click="purchasedClicked(scope.row)">
+            {{ displayPurchased(scope.row) }}
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column v-for="dateGroup in dateGroups" :key="dateGroup.key" :label="dateGroup.date" width="160" align="center">
+        <template slot-scope="scope">
+          <div class="stock-forecast-table__link stock-forecast-table__amount"
+            @click="moveAmountClicked(scope.row, dateGroup.date)"
+            v-if="productHasMovesAtDate(scope.row, dateGroup.date)">
+            {{ getStockValue(scope.row, dateGroup.date) }}
+          </div>
+          <div v-else>{{ getStockValue(scope.row, dateGroup.date) }}</div>
+        </template>
+      </el-table-column>
+    </el-table>
+  </div>
 </template>
 
 <script>
@@ -106,24 +91,25 @@ export default {
             default: true,
         },
     },
-    data() {
+    data: function data() {
         return {
             dateGroups: []
-        }
+        };
     },
-    mounted() {
-        this.computeDateGroups()
+    mounted: function mounted() {
+        this.computeDateGroups();
     },
+
     watch: {
-        dateFrom() {
-            this.computeDateGroups()
+        dateFrom: function dateFrom() {
+            this.computeDateGroups();
         },
-        dateTo() {
-            this.computeDateGroups()
+        dateTo: function dateTo() {
+            this.computeDateGroups();
         },
-        dateGroupBy() {
-            this.computeDateGroups()
-        },
+        dateGroupBy: function dateGroupBy() {
+            this.computeDateGroups();
+        }
     },
     computed: {
         rowGroupLabel(){
@@ -132,8 +118,14 @@ export default {
         },
     },
     methods: {
-        computeDateGroups(){
+        computeDateGroups: function computeDateGroups() {
             this.dateGroups = makeDateGroups(this.dateFrom, this.dateTo, this.dateGroupBy || "month");
+            setTimeout(() => this.refreshTableLayout(), 500)
+            setTimeout(() => this.refreshTableLayout(), 1000)
+            setTimeout(() => this.refreshTableLayout(), 2000)
+        },
+        refreshTableLayout() {
+            this.$refs.table.doLayout();
         },
         productHasMovesAtDate(row, dateTo){
             var dateFrom = moment(dateTo).subtract(1, this.dateGroupBy || "month").format("YYYY-MM-DD");
