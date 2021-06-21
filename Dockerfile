@@ -9,6 +9,7 @@ RUN pip3 install -r ./test-requirements.txt && rm ./test-requirements.txt
 USER odoo
 
 COPY vue /mnt/extra-addons/vue
+COPY vue_algolia_search mnt/extra-addons/vue_algolia_search
 COPY vue_backend /mnt/extra-addons/vue_backend
 COPY vue_element_ui /mnt/extra-addons/vue_element_ui
 COPY vue_frontend /mnt/extra-addons/vue_frontend

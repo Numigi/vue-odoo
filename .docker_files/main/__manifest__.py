@@ -12,6 +12,7 @@
     "summary": "Install all addons required for testing.",
     "depends": [
         "vue",
+        "vue_algolia_search",
         "vue_backend",
         "vue_element_ui",
         "vue_frontend",
