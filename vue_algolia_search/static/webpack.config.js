@@ -7,8 +7,15 @@ module.exports = {
   output: {filename: "vueAlgoliaSearch.js"},
   module: {
     rules: [
-      {test: /\.js$/, loader: "babel-loader", query: {presets: ["env"]}},
+      {test: /\.js$/, loader: "babel-loader"},
       {test: /\.vue$/, loader: "vue-loader"},
+      {
+        test: /\.css$/,
+        use: [
+          'vue-style-loader',
+          'css-loader'
+        ]
+      },
     ],
   },
   plugins: [
