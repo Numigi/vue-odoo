@@ -11,10 +11,15 @@
 
 <script>
 import algoliasearch from 'algoliasearch/lite';
+import InstantSearch from 'vue-instantsearch'
+import 'instantsearch.css/themes/satellite-min.css'
+
+Vue.use(InstantSearch)
+
 
 export default {
   components: {
-    
+
   },
   data() {
     return {
@@ -26,10 +31,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-body {
-  font-family: sans-serif;
-  padding: 1em;
-}
-</style>

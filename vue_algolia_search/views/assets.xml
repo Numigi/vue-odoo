@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="assets_frontend" name="assets_frontend" inherit_id="web.assets_frontend">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/vue_algolia_search/static/src/js/app.js"></script>
+            <script type="text/javascript" src="/vue_algolia_search/static/dist/vueAlgoliaSearch.js"></script>
+        </xpath>
+    </template>
+
+</odoo>
