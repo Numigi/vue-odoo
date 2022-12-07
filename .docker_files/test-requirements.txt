@@ -1,2 +1,2 @@
-freezegun==0.1.11
+freezegun==1.1.0
 ddt==1.2.1
