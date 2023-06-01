@@ -21,7 +21,7 @@ jobs:
           name: Setup Log Folder For Reports
           command: sudo mkdir -p .log && sudo chmod 777 .log
 
-  # To run Javascript Tests (comment to disable)
+  # To run Tests (comment to disable)
        - run:
           name: Run Test
           command: docker-compose run --rm odoo run_pytest.sh
