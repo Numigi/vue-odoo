@@ -30,9 +30,9 @@ jobs:
           name: Run Javascript Tests
           command: docker-compose run --rm client npm test
 
-       - run:
-          name: Codacy Coverage
-          command: bash <(curl -Ls https://coverage.codacy.com/get.sh) report -l python -r .log/coverage.xml
+      #  - run:
+      #     name: Codacy Coverage
+      #     command: bash <(curl -Ls https://coverage.codacy.com/get.sh) report -l python -r .log/coverage.xml
 
        - store_test_results:
           path: .log
