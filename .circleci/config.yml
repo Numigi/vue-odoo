@@ -21,13 +21,14 @@ jobs:
           name: Setup Log Folder For Reports
           command: sudo mkdir -p .log && sudo chmod 777 .log
 
-      #  - run:
-      #     name: Run Test
-      #     command: docker-compose run --rm odoo run_pytest.sh
+  # To run Tests (comment to disable)
+       - run:
+          name: Run Test
+          command: docker-compose run --rm odoo run_pytest.sh
 
-      #  - run:
-      #     name: Run Javascript Tests
-      #     command: docker-compose run --rm client npm test
+#       - run:
+#          name: Run Javascript Tests
+#          command: docker-compose run --rm client npm test
 
       #  - run:
       #     name: Codacy Coverage

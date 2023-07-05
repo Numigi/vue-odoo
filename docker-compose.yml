@@ -15,12 +15,12 @@ services:
     command: odoo
     environment:
       - LOG_ODOO=/var/log/odoo
-  client:
-    build:
-      context: .
-      dockerfile: Dockerfile-client
+#  client:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile-client
   db:
-    image: postgres:9.6
+    image: postgres:13
     environment:
       - POSTGRES_PASSWORD=odoo
       - POSTGRES_USER=odoo
