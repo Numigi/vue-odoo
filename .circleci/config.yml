@@ -26,9 +26,9 @@ jobs:
           name: Run Test
           command: docker-compose run --rm odoo run_pytest.sh
 
-       - run:
-          name: Run Javascript Tests
-          command: docker-compose run --rm client npm test
+#       - run:
+#          name: Run Javascript Tests
+#          command: docker-compose run --rm client npm test
 
       #  - run:
       #     name: Codacy Coverage

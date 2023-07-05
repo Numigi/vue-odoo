@@ -1,4 +1,4 @@
-# © 2018 Numigi
+# © 2023 Numigi
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
 
 {
@@ -13,8 +13,8 @@
     "depends": [
         "vue",
         # "vue_backend",
-        "vue_element_ui",
-        "vue_frontend",
+        # "vue_element_ui",
+        # "vue_frontend",
         # "vue_i18n",
         # "vue_router",
         # "vue_stock_forecast",
