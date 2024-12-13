@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="vue_assets" name="vue_assets" inherit_id="vue.vue_assets">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/vuex/static/lib/vuex.js"></script>
+            <script type="text/javascript" src="/vuex/static/src/js/store.js"></script>
+        </xpath>
+    </template>
+
+</odoo>

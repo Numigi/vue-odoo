@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="vue_assets" name="vue_assets" inherit_id="vue.vue_assets">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/vue_i18n/static/lib/deepmerge.js"></script>
+            <script type="text/javascript" src="/vue_i18n/static/lib/vue-i18n.js"></script>
+            <script type="text/javascript" src="/vue_i18n/static/src/js/i18n_factory.js"></script>
+        </xpath>
+    </template>
+
+</odoo>
