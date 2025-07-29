@@ -49,10 +49,7 @@ Instead, it enables injecting a search method to handle the queries to the serve
 
 When the selection changes, the change signal is emited.
 
-## Contributors
+Contributors
+------------
 
-* Numigi (tm) and all its contributors (https://bit.ly/numigiens)
-
-## More information
-
-* Meet us at https://bit.ly/numigi-com
+The [Numigi](https://numigi.com/r/home) team is the contributor to this project. We help Quebec companies implement Odoo and Konvergo ERP.

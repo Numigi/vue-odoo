@@ -1,4 +1,4 @@
-# © 2020 - today Numigi (tm) and all its contributors (https://bit.ly/numigiens)
+# © Numigi (tm) and all its contributors (https://numigi.com/r/home)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 {
@@ -6,7 +6,7 @@
     "version": "1.3.1",
     "author": "Numigi",
     "maintainer": "Numigi",
-    "website": "https://bit.ly/numigi-com",
+    "website": "https://numigi.com/r/home",
     "license": "LGPL-3",
     "category": "Stock",
     "summary": "A dynamic stock forecast report using Vuejs.",
