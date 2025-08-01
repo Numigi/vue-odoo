@@ -24,7 +24,7 @@
     "ava": "^3.12.1",
     "browser-env": "^3.2.5",
     "element-ui": "^2.4.1",
-    "moment": "^2.22.2",
+    "moment": "^2.29.4",
     "pretty": "^2.0.0",
     "require-extension-hooks": "^0.3.2",
     "require-extension-hooks-babel": "^0.1.1",
